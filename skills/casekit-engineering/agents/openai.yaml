@@ -1,0 +1,4 @@
+interface:
+  display_name: "CaseKit Engineering"
+  short_description: "Build and ship judge-ready software safely"
+  default_prompt: "Use $casekit-engineering to turn this approved product scope into an implementation, quality, and release plan."

@@ -42,6 +42,7 @@ CaseKit uses stable IDs—`CLM`, `SRC`, `ASM`, `MET`, `PRM`, `DEC`, `RSK`, and `
 | `casekit-strategy` | options, strategic choice, weighted comparison, rejected alternatives, confidence |
 | `casekit-finance` | revenue-first model, CAC/LTV/payback, MRR/ARR, GRR/NRR, cash, scenarios, sensitivity |
 | `casekit-product-tech` | MVP, architecture, feasibility, risk controls, demo |
+| `casekit-engineering` | implementation, contracts, code quality, tests, CI, release, operations |
 | `casekit-marketing-growth` | positioning, GTM, launch/event, funnel ownership, experiments |
 | `casekit-operations` | operating model, RACI, capacity, roadmap, governance, scale gates |
 | `casekit-pitch` | narrative, slide storyboard, scripts, demo choreography, Q&A |

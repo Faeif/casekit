@@ -122,14 +122,16 @@ def smoke_tests(errors):
                 "qna-bank.csv",
                 "data-import-map.json",
                 "integration-contract.csv",
+                "engineering-delivery-plan.md",
             }
             missing_start_files = sorted(name for name in required_start_files if not (project / name).exists())
             if missing_start_files:
                 fail(f"Obsidian workspace template is missing: {missing_start_files}", errors)
             cli_project = temp_path / "cli-case"
             run([sys.executable, str(casekit_cli), "init", str(cli_project), "--case-type", "startup"])
-            if not (cli_project / ".agents" / "skills" / "casekit-strategy" / "SKILL.md").exists():
-                fail("Clone-to-case CLI did not install the strategy skill", errors)
+            for skill_name in ("casekit-strategy", "casekit-engineering"):
+                if not (cli_project / ".agents" / "skills" / skill_name / "SKILL.md").exists():
+                    fail(f"Clone-to-case CLI did not install {skill_name}", errors)
             install_target = temp_path / "installed"
             run(
                 [

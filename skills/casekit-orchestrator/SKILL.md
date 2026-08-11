@@ -30,12 +30,13 @@ Use sibling skills in this order unless the brief requires a different dependenc
 3. `casekit-strategy`: option portfolio, weighted choice, rejected alternatives, and decision lock.
 4. `casekit-finance`: metric tree, revenue drivers, funnel, costs, scenarios, economics.
 5. `casekit-product-tech`: user flow, MVP, architecture, implementation, demo, risks.
-6. `casekit-marketing-growth`: positioning, channels, launch, funnel ownership, experiments.
-7. `casekit-operations`: operating model, RACI, capacity, roadmap, gates, contingencies.
-8. `casekit-pitch`: thesis, storyline, slide variants, script, transitions, appendix.
-9. `casekit-validator`: traceability, cross-artifact integrity, weighted rubric, source and submission gates.
-10. `casekit-deck`: canonical deck spec, editable presentation, notes, appendix, visual QA.
-11. `casekit-red-team`: adversarial attacks, Q&A, prioritized repairs, and final rehearsal.
+6. `casekit-engineering`: implementation slices, contracts, quality gates, CI, release, operations.
+7. `casekit-marketing-growth`: positioning, channels, launch, funnel ownership, experiments.
+8. `casekit-operations`: operating model, RACI, capacity, roadmap, gates, contingencies.
+9. `casekit-pitch`: thesis, storyline, slide variants, script, transitions, appendix.
+10. `casekit-validator`: traceability, cross-artifact integrity, weighted rubric, source and submission gates.
+11. `casekit-deck`: canonical deck spec, editable presentation, notes, appendix, visual QA.
+12. `casekit-red-team`: adversarial attacks, Q&A, prioritized repairs, and final rehearsal.
 
 Run research and problem framing before locking the solution. Iterate finance, product, and marketing together because their assumptions are coupled.
 

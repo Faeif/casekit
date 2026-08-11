@@ -10,6 +10,7 @@ Open this folder directly as an Obsidian vault. This workspace is the team's sou
 4. Ask an AI: `Use casekit-orchestrator to read this workspace, list missing critical inputs, choose the operating mode, and create an assignment plan.`
 5. Use `casekit-strategy` to fill `option-portfolio.csv` before locking a solution.
 6. List every external dependency in `integration-contract.csv`; mark it Real, Sandbox, Mocked, Planned, or Blocked.
+7. If the team will build code, use `casekit-engineering` to complete `engineering-delivery-plan.md` before implementation.
 
 ## Edit numbers safely
 
