@@ -185,6 +185,10 @@ python3 scripts/validate_suite.py
 
 The validator checks Agent Skills metadata, provider-neutral source content, universal/provider/legacy install paths, context export, project generation, cross-ledger references, source metadata, installer replacement behavior, finance model paths, CAC/LTV/payback and recurring-revenue reconciliation, cohort-to-cash/AR reconciliation, invalid retention, failed thresholds, tampered economics, rubric scoring, deck generation, and PowerPoint package integrity. GitHub Actions runs the same command on pushes and pull requests.
 
+## Quality and releases
+
+Every pull request runs the full validation suite. CodeQL analyzes Python on pushes, pull requests, and a weekly schedule; Dependabot opens dependency updates weekly. A pushed version tag such as `v1.1.0` validates the repository again, checks that the tag matches `casekit.json`, and publishes a GitHub Release with an uploadable `casekit-context.md` artifact.
+
 ## Repository layout
 
 ```text

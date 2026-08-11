@@ -1,0 +1,40 @@
+name: Release CaseKit
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python3 -m pip install -r requirements.txt
+      - run: python3 scripts/validate_suite.py
+      - name: Verify tag matches package version
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          version = json.loads(Path("casekit.json").read_text())["version"]
+          tag = os.environ["GITHUB_REF_NAME"]
+          if tag != f"v{version}":
+              raise SystemExit(f"Tag {tag} must match casekit.json version v{version}")
+          PY
+      - run: mkdir -p dist && python3 scripts/export_context.py --all --output dist/casekit-context.md
+      - uses: actions/upload-artifact@v4
+        with:
+          name: casekit-context
+          path: dist/casekit-context.md
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" dist/casekit-context.md --generate-notes --title "CaseKit $GITHUB_REF_NAME"
