@@ -168,6 +168,7 @@ def audit(project):
     metric_ids = {row["metric_id"].strip() for row in tables.get("metrics", [])}
     metric_rows = {row["metric_id"].strip(): row for row in tables.get("metrics", [])}
     premise_ids = {row["premise_id"].strip() for row in tables.get("premises", [])}
+    risk_ids = {row["risk_id"].strip() for row in tables.get("risks", [])}
 
     for line, row in enumerate(tables.get("assumptions", []), 2):
         try:
@@ -295,9 +296,58 @@ def audit(project):
                     if ref not in sources | assumption_ids | metric_ids:
                         errors.append(f"integration-contract.csv:{line}: unresolved source or assumption reference {ref}")
                 risk_id = row["risk_id"].strip()
-                if risk_id not in {row["risk_id"].strip() for row in tables.get("risks", [])}:
+                if risk_id not in risk_ids:
                     errors.append(f"integration-contract.csv:{line}: unresolved risk reference {risk_id}")
             integration_count = len(integration_rows)
+
+    engineering_profile_path = project / "engineering" / "00-engineering-profile.json"
+    engineering_level = None
+    if engineering_profile_path.exists():
+        try:
+            engineering_profile = json.loads(engineering_profile_path.read_text(encoding="utf-8"))
+            engineering_level = str(engineering_profile.get("delivery_level", "")).lower()
+            if engineering_level not in {"concept", "prototype", "pilot", "production"}:
+                errors.append("engineering/00-engineering-profile.json: delivery_level must be concept, prototype, pilot, or production")
+            if not str(engineering_profile.get("architecture_style", "")).strip():
+                errors.append("engineering/00-engineering-profile.json: architecture_style is required")
+        except (json.JSONDecodeError, AttributeError):
+            errors.append("engineering/00-engineering-profile.json: invalid JSON")
+
+    if engineering_level in {"pilot", "production"}:
+        required_engineering_artifacts = {
+            "architecture.md", "nfr-slo.md", "threat-model.md", "data-lifecycle.md", "api-event-contracts.md",
+            "deployment-runbook.md", "test-matrix.csv", "observability.md", "production-readiness.csv",
+        }
+        for filename in sorted(required_engineering_artifacts):
+            if not (project / "engineering" / filename).exists():
+                errors.append(f"engineering: missing {engineering_level} artifact engineering/{filename}")
+
+    readiness_path = project / "engineering" / "production-readiness.csv"
+    if engineering_level == "production" and readiness_path.exists():
+        readiness_fields, readiness_rows = read_csv(readiness_path)
+        readiness_rows = [row for row in readiness_rows if not is_blank(row)]
+        required_readiness_fields = {"area", "requirement", "measurement", "owner", "status", "evidence_ids", "risk_id", "rollback_or_fallback"}
+        missing_readiness_fields = sorted(required_readiness_fields - set(readiness_fields))
+        if missing_readiness_fields:
+            errors.append(f"engineering/production-readiness.csv: missing columns {', '.join(missing_readiness_fields)}")
+        else:
+            required_areas = {"reliability", "security", "privacy-data", "testing", "observability", "deployment", "incident-response", "cost-capacity"}
+            by_area = {row.get("area", "").strip(): row for row in readiness_rows}
+            for area in sorted(required_areas):
+                row = by_area.get(area)
+                if row is None:
+                    errors.append(f"engineering/production-readiness.csv: missing required area {area}")
+                    continue
+                for field in required_readiness_fields - {"area"}:
+                    if not row.get(field, "").strip():
+                        errors.append(f"engineering/production-readiness.csv: {area} blank {field}")
+                if row.get("status", "").strip().lower() != "passed":
+                    errors.append(f"engineering/production-readiness.csv: {area} must have status passed for production")
+                for ref in split_ids(row.get("evidence_ids", "")):
+                    if ref not in claims | sources | assumption_ids | metric_ids:
+                        errors.append(f"engineering/production-readiness.csv: {area} unresolved evidence reference {ref}")
+                if row.get("risk_id", "").strip() not in risk_ids:
+                    errors.append(f"engineering/production-readiness.csv: {area} unresolved risk reference {row.get('risk_id', '').strip()}")
 
     deck_path = project / "12-deck-spec.json"
     if deck_path.exists():
@@ -438,6 +488,8 @@ def audit(project):
         counts["options"] = option_count
     if integration_path.exists():
         counts["integrations"] = integration_count
+    if engineering_level:
+        counts["engineering_level"] = engineering_level
     if economics_path.exists():
         counts["unit_economics"] = 1
     return errors, warnings, counts

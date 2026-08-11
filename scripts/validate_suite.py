@@ -123,10 +123,24 @@ def smoke_tests(errors):
                 "data-import-map.json",
                 "integration-contract.csv",
                 "engineering-delivery-plan.md",
+                "engineering/00-engineering-profile.json",
+                "engineering/architecture.md",
+                "engineering/production-readiness.csv",
             }
             missing_start_files = sorted(name for name in required_start_files if not (project / name).exists())
             if missing_start_files:
                 fail(f"Obsidian workspace template is missing: {missing_start_files}", errors)
+
+            production_case = temp_path / "production-case"
+            shutil.copytree(fixture, production_case)
+            (production_case / "engineering").mkdir()
+            (production_case / "engineering" / "00-engineering-profile.json").write_text(
+                json.dumps({"delivery_level": "production", "architecture_style": "modular-monolith"}),
+                encoding="utf-8",
+            )
+            production_result = run_unchecked([sys.executable, str(validator / "audit_case.py"), str(production_case)])
+            if production_result.returncode == 0 or "missing production artifact engineering/architecture.md" not in production_result.stdout:
+                fail("Production readiness regression did not require architecture artifacts", errors)
             cli_project = temp_path / "cli-case"
             run([sys.executable, str(casekit_cli), "init", str(cli_project), "--case-type", "startup"])
             for skill_name in ("casekit-strategy", "casekit-engineering"):

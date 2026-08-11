@@ -1,0 +1,9 @@
+area,requirement,measurement,owner,status,evidence_ids,risk_id,rollback_or_fallback
+reliability,,,,,,,
+security,,,,,,,
+privacy-data,,,,,,,
+testing,,,,,,,
+observability,,,,,,,
+deployment,,,,,,,
+incident-response,,,,,,,
+cost-capacity,,,,,,,

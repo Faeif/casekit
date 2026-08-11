@@ -10,14 +10,14 @@ Own delivery quality after Product & Tech locks the vertical slice. Build only w
 ## Start
 
 1. Read `00-brief.md`, the chosen decision, product/tech output, metric tree, risks, integration contract, and delivery level.
-2. Write `engineering-delivery-plan.md`. Separate `now`, `before pilot`, and `before production`.
+2. Set `engineering/00-engineering-profile.json`, then complete the architecture blueprint files in `engineering/`. Separate `now`, `before pilot`, and `before production`.
 3. Define the smallest end-to-end slice, its acceptance tests, and what is deliberately simulated.
 4. Choose the simplest stack that satisfies the scope, existing team skills, integration constraints, and non-functional requirements. Record a Decision ID and trade-offs.
 5. Create contracts before implementation: API/request-response, data ownership, authorization, events/webhooks, error behavior, and migration/compatibility plan.
 6. Implement in thin slices. Keep business rules testable and isolate external providers behind adapters.
 7. Run the quality gate before demo, merge, or release. Fix blockers; do not hide them behind UI polish.
 
-Read `references/engineering-quality-gate.md`. Use `assets/engineering-delivery-plan.md`.
+Read `references/engineering-quality-gate.md`. Read `references/architecture-blueprint.md` before an architecture review. Use `assets/engineering-delivery-plan.md` and the generated `engineering/` templates.
 
 ## Non-negotiable rules
 
@@ -27,12 +27,14 @@ Read `references/engineering-quality-gate.md`. Use `assets/engineering-delivery-
 - Test the business rule and failure mode that matter to the case, not merely the happy-path screen.
 - Add a deterministic demo mode, seeded data, and a fallback recording before the final rehearsal.
 - Production claims require measurable SLOs, monitored dependencies, migration/rollback behavior, support ownership, and a security/privacy review proportionate to risk.
+- Set `delivery_level` to `production` only after every required row in `engineering/production-readiness.csv` is `passed`; CaseKit validates this gate.
 
 ## Handoff
 
 Report:
 
 - Delivery level and vertical slice:
+- Architecture, data, security, and deployment artifacts completed:
 - Architecture decisions and trade-offs:
 - Real versus mocked components:
 - Contracts and data boundaries:

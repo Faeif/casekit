@@ -1,6 +1,6 @@
 # Engineering delivery plan
 
-Use `casekit-engineering` to complete this plan after product scope lock. Copy the full template from its assets when a coded build is in scope.
+Use `casekit-engineering` to complete this plan after product scope lock. The complete architecture packet is in `engineering/`; set its delivery level before implementation.
 
 - Delivery level:
 - Vertical slice:
