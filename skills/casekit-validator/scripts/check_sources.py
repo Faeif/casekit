@@ -20,7 +20,9 @@ def main():
     parser.add_argument("--online", action="store_true")
     parser.add_argument("--timeout", type=float, default=8.0)
     args = parser.parse_args()
-    path = args.project.expanduser().resolve() / "01-evidence-ledger.csv"
+    project = args.project.expanduser().resolve()
+    official = project / "03-OFFICIAL"
+    path = (official if official.is_dir() else project) / "01-evidence-ledger.csv"
     errors, warnings = [], []
     with path.open(newline="", encoding="utf-8-sig") as handle:
         rows = list(csv.DictReader(handle))

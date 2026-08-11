@@ -98,12 +98,17 @@ def write_metric_tree(path, fields, rows):
         writer.writerows(rows)
 
 
+def official_dir(project):
+    clean = project / "03-OFFICIAL"
+    return clean if clean.is_dir() else project
+
+
 def sync(project, mapping_path, apply):
     mapping = json.loads(mapping_path.read_text(encoding="utf-8"))
     mappings = mapping.get("mappings")
     if not isinstance(mappings, list) or not mappings:
         raise ValueError("Mapping must contain a non-empty 'mappings' list")
-    metric_path = project / "03-metric-tree.csv"
+    metric_path = official_dir(project) / "03-metric-tree.csv"
     fields, rows = read_metric_tree(metric_path)
     required = {"metric_id", "low", "base", "high"}
     if not required <= set(fields):

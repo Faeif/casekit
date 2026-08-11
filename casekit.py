@@ -18,6 +18,17 @@ DECK = ROOT / "skills" / "casekit-deck" / "scripts"
 SPREADSHEET = ROOT / "skills" / "casekit-finance" / "scripts" / "spreadsheet_sync.py"
 
 
+def workspace_dir(project, clean_name, legacy_name):
+    """Use the clean team layout when present, otherwise retain legacy workspaces."""
+    clean = project / clean_name
+    return clean if clean.is_dir() else project / legacy_name
+
+
+def official_dir(project):
+    clean = project / "03-OFFICIAL"
+    return clean if clean.is_dir() else project
+
+
 def run(command):
     result = subprocess.run(command, check=False)
     if result.returncode:
@@ -74,7 +85,7 @@ def cmd_init(args):
         raise SystemExit(f"Refusing to overwrite existing path: {destination}")
     run([sys.executable, str(ORCHESTRATOR / "new_case.py"), str(destination)])
     run([sys.executable, str(ROOT / "install.py"), "--scope", "project", "--project-root", str(destination)])
-    inputs = destination / "inputs"
+    inputs = workspace_dir(destination, "01-INPUTS", "inputs")
     imported = {}
     for label, source in (("brief", args.brief), ("rubric", args.rubric), ("deck", args.deck), ("data", args.data)):
         target = copy_input(source, inputs, label)
@@ -96,7 +107,7 @@ def cmd_ingest(args):
     project = Path(args.project).expanduser().resolve()
     if not project.is_dir():
         raise SystemExit(f"Project directory does not exist: {project}")
-    target = copy_input(args.file, project / "inputs", args.kind)
+    target = copy_input(args.file, workspace_dir(project, "01-INPUTS", "inputs"), args.kind)
     print(f"Imported {args.kind}: {target}")
     if target.suffix.lower() == ".pdf":
         extract_pdf(target, project)
@@ -128,7 +139,7 @@ def cmd_validate(args):
 
 def cmd_render(args):
     project = Path(args.project).expanduser().resolve()
-    spec = project / "12-deck-spec.json"
+    spec = official_dir(project) / "12-deck-spec.json"
     output = Path(args.output).expanduser().resolve() if args.output else project / "outputs" / "submission.pptx"
     run([sys.executable, str(DECK / "render_deck.py"), str(spec), str(output)])
 

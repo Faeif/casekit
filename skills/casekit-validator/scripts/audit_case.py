@@ -98,9 +98,12 @@ def close_enough(left, right):
 def audit(project):
     errors, warnings = [], []
     tables, locations, ids = {}, {}, set()
+    official = project / "03-OFFICIAL"
+    if not official.is_dir():
+        official = project
 
     for group, (filename, required, unique_fields) in FILES.items():
-        path = project / filename
+        path = official / filename
         if not path.exists():
             errors.append(f"{filename}: missing required artifact")
             continue
@@ -215,7 +218,7 @@ def audit(project):
             if ref not in premise_ids:
                 errors.append(f"09-experiments.csv:{line}: unresolved premise reference {ref}")
 
-    option_path = project / "option-portfolio.csv"
+    option_path = official / "option-portfolio.csv"
     option_count = 0
     if option_path.exists():
         option_fields, option_rows = read_csv(option_path)
@@ -257,7 +260,7 @@ def audit(project):
                 errors.append("option-portfolio.csv: exactly one nonblank option must have status 'chosen'")
             option_count = len(option_rows)
 
-    integration_path = project / "integration-contract.csv"
+    integration_path = official / "integration-contract.csv"
     integration_count = 0
     if integration_path.exists():
         integration_fields, integration_rows = read_csv(integration_path)
@@ -301,7 +304,7 @@ def audit(project):
                     errors.append(f"integration-contract.csv:{line}: unresolved risk reference {risk_id}")
             integration_count = len(integration_rows)
 
-    idea_path = project / "idea-backlog.csv"
+    idea_path = official / "idea-backlog.csv"
     idea_count = 0
     if idea_path.exists():
         idea_fields, idea_rows = read_csv(idea_path)
@@ -346,7 +349,7 @@ def audit(project):
                     errors.append(f"idea-backlog.csv:{line}: accepted-for-case requires promoted_artifacts")
             idea_count = len(idea_rows)
 
-    engineering_profile_path = project / "engineering" / "00-engineering-profile.json"
+    engineering_profile_path = official / "engineering" / "00-engineering-profile.json"
     engineering_level = None
     if engineering_profile_path.exists():
         try:
@@ -365,10 +368,10 @@ def audit(project):
             "deployment-runbook.md", "test-matrix.csv", "observability.md", "production-readiness.csv",
         }
         for filename in sorted(required_engineering_artifacts):
-            if not (project / "engineering" / filename).exists():
+            if not (official / "engineering" / filename).exists():
                 errors.append(f"engineering: missing {engineering_level} artifact engineering/{filename}")
 
-    readiness_path = project / "engineering" / "production-readiness.csv"
+    readiness_path = official / "engineering" / "production-readiness.csv"
     if engineering_level == "production" and readiness_path.exists():
         readiness_fields, readiness_rows = read_csv(readiness_path)
         readiness_rows = [row for row in readiness_rows if not is_blank(row)]
@@ -395,7 +398,7 @@ def audit(project):
                 if row.get("risk_id", "").strip() not in risk_ids:
                     errors.append(f"engineering/production-readiness.csv: {area} unresolved risk reference {row.get('risk_id', '').strip()}")
 
-    deck_path = project / "12-deck-spec.json"
+    deck_path = official / "12-deck-spec.json"
     if deck_path.exists():
         try:
             deck = json.loads(deck_path.read_text(encoding="utf-8"))
@@ -436,7 +439,7 @@ def audit(project):
     else:
         warnings.append("12-deck-spec.json: not present; required before deck freeze")
 
-    economics_path = project / "14-unit-economics.json"
+    economics_path = official / "14-unit-economics.json"
     if economics_path.exists():
         try:
             economics = json.loads(economics_path.read_text(encoding="utf-8"))
@@ -528,7 +531,7 @@ def audit(project):
         except (json.JSONDecodeError, AttributeError) as exc:
             errors.append(f"14-unit-economics.json: invalid JSON structure: {exc}")
 
-    cfo_plan_path = project / "15-cfo-operating-plan.json"
+    cfo_plan_path = official / "15-cfo-operating-plan.json"
     if cfo_plan_path.exists():
         try:
             cfo_plan = json.loads(cfo_plan_path.read_text(encoding="utf-8"))

@@ -58,9 +58,12 @@ def validate(root):
     errors = []
     warnings = []
     seen = {}
+    official = root / "03-OFFICIAL"
+    if not official.is_dir():
+        official = root
 
     for group, (filename, required, patterns, unique_fields) in FILES.items():
-        path = root / filename
+        path = official / filename
         if not path.exists():
             errors.append(f"Missing required file: {filename}")
             continue

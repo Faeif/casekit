@@ -219,6 +219,17 @@ def smoke_tests(errors):
                 if not required <= names:
                     fail(f"Deck smoke test missing PPTX package entries: {sorted(required - names)}", errors)
 
+            clean_layout = temp_path / "clean-layout"
+            clean_official = clean_layout / "03-OFFICIAL"
+            shutil.copytree(fixture, clean_official)
+            (clean_layout / "01-INPUTS").mkdir()
+            run([sys.executable, str(validator / "audit_case.py"), str(clean_layout), "--strict"])
+            run([sys.executable, str(validator / "check_sources.py"), str(clean_layout)])
+            clean_deck = temp_path / "clean-layout.pptx"
+            run([sys.executable, str(casekit_cli), "render", str(clean_layout), "--output", str(clean_deck)])
+            if not clean_deck.exists():
+                fail("Clean-layout render did not create a PowerPoint", errors)
+
             synced = temp_path / "spreadsheet-sync-case"
             shutil.copytree(fixture, synced)
             (synced / "inputs").mkdir()

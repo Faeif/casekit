@@ -104,6 +104,8 @@ The resulting workspace contains Markdown notes, CSV ledgers, spreadsheet mappin
 
 Use one private repository for each live case; CaseKit itself can remain public. The default is **Easy Team Mode**: source files go in `inputs/`, each teammate works only in `00-INBOX/<their-name>/`, and the Integrator alone updates shared official files, metrics, and the deck. Teammates can safely commit their own draft folder directly to `main`; after a team decision, everyone pulls the Integrator's official update. `TEAM-WORKFLOW.md` in every new workspace contains the copy-paste setup commands.
 
+For a cleaner team-facing layout, CaseKit commands also support `01-INPUTS/`, `02-TEAM/`, and `03-OFFICIAL/`. This is useful when the team wants all approved records in one visible folder while keeping the same validation and rendering controls.
+
 Chat and AI-generated Markdown are drafts by default. Keep throwaway ideas in chat or a personal INBOX folder; use `idea-backlog.csv` only when an idea needs team review. It cannot enter the model or deck until a human promotes it to `accepted-for-test` (with an `EXP` ID) or `accepted-for-case` (with a `DEC` ID and affected artifacts). See `README-START-HERE.md` in a generated workspace for ready-to-use prompts and rules.
 
 ### Manual start
