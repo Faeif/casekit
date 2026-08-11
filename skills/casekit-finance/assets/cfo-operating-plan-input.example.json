@@ -1,0 +1,25 @@
+{
+  "plan_name": "Base case — cohort-to-cash plan",
+  "currency": "THB",
+  "period_name": "month",
+  "period_count": 6,
+  "starting_cash": 1200000,
+  "collection_lag_periods": 1,
+  "source_or_assumption_ids": ["ASM-101", "ASM-102"],
+  "cohorts": [
+    {"cohort_id": "COH-001", "start_period": 1, "new_customers": 100, "price_per_active_customer": 250, "variable_cost_per_active_customer": 65, "retention_rates": [1, 0.9, 0.82, 0.76, 0.71, 0.67], "source_or_assumption_ids": ["ASM-103", "ASM-104"]},
+    {"cohort_id": "COH-002", "start_period": 3, "new_customers": 150, "price_per_active_customer": 250, "variable_cost_per_active_customer": 65, "retention_rates": [1, 0.9, 0.82, 0.76], "source_or_assumption_ids": ["ASM-103", "ASM-104"]}
+  ],
+  "operating_periods": [
+    {"period": 1, "fixed_cost": 90000, "acquisition_spend": 80000, "one_time_cost": 120000, "source_or_assumption_ids": ["ASM-105"]},
+    {"period": 2, "fixed_cost": 90000, "acquisition_spend": 60000, "one_time_cost": 0, "source_or_assumption_ids": ["ASM-105"]},
+    {"period": 3, "fixed_cost": 100000, "acquisition_spend": 100000, "one_time_cost": 0, "source_or_assumption_ids": ["ASM-105"]},
+    {"period": 4, "fixed_cost": 100000, "acquisition_spend": 70000, "one_time_cost": 0, "source_or_assumption_ids": ["ASM-105"]},
+    {"period": 5, "fixed_cost": 110000, "acquisition_spend": 50000, "one_time_cost": 0, "source_or_assumption_ids": ["ASM-105"]},
+    {"period": 6, "fixed_cost": 110000, "acquisition_spend": 50000, "one_time_cost": 0, "source_or_assumption_ids": ["ASM-105"]}
+  ],
+  "decision_thresholds": {"minimum_ending_cash": 100000, "minimum_cash_trough": 100000, "minimum_contribution_margin": 0.6, "source_or_assumption_ids": ["ASM-106"]},
+  "variance_actuals": [
+    {"period": 1, "recognized_revenue": 23000, "cash_collections": 0, "variable_cost": 5980, "fixed_cost": 90000, "acquisition_spend": 85000, "one_time_cost": 120000, "source_or_assumption_ids": ["MET-101"]}
+  ]
+}

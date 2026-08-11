@@ -51,6 +51,20 @@
 - Evidence and assumption IDs:
 - Pass / iterate / stop result:
 
+### CFO operating plan (when funding, launch budget, or cash timing matters)
+
+| Period | Active customers | Recognized revenue | Cash collections | Contribution margin | Operating result | Ending cash | AR |
+|---|---:|---:|---:|---:|---:|---:|---:|
+
+- Collection terms / lag:
+- Cash trough and period:
+- Funding or spend cap required before next collection:
+- Capacity-linked cost and guardrail:
+- Budget tranche / KPI required for release:
+- Actual-versus-plan variance owner and review cadence:
+- Reforecast / stop trigger:
+- Evidence and assumption IDs:
+
 ## 7. Sensitivity
 
 | Rank | Assumption ID | Input | Confidence | Sensitivity | Downside result | Validation |

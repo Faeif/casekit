@@ -40,7 +40,7 @@ CaseKit uses stable IDs—`CLM`, `SRC`, `ASM`, `MET`, `PRM`, `DEC`, `RSK`, and `
 | `casekit-discovery` | problem event, stakeholder, premises, opportunity frames, validation gate |
 | `casekit-research` | evidence, market/customer/competitor research, source quality, verification |
 | `casekit-strategy` | options, strategic choice, weighted comparison, rejected alternatives, confidence |
-| `casekit-finance` | revenue-first model, CAC/LTV/payback, MRR/ARR, GRR/NRR, cash, scenarios, sensitivity |
+| `casekit-finance` | revenue-first model, CAC/LTV/payback, MRR/ARR, GRR/NRR, cohort-to-cash plan, AR, budget variance, scenarios, sensitivity |
 | `casekit-product-tech` | MVP, architecture, feasibility, risk controls, demo |
 | `casekit-engineering` | implementation, contracts, code quality, tests, CI, release, operations |
 | `casekit-marketing-growth` | positioning, GTM, launch/event, funnel ownership, experiments |
@@ -128,6 +128,14 @@ python3 skills/casekit-finance/scripts/unit_economics.py \
   --pretty
 ```
 
+CFO operating-plan example (run separately for base, downside, and upside):
+
+```bash
+python3 skills/casekit-finance/scripts/cfo_operating_plan.py \
+  skills/casekit-finance/assets/cfo-operating-plan-input.example.json \
+  --output ./my-competition/15-cfo-operating-plan.json --pretty
+```
+
 Validate and render after the ledgers and deck spec are populated:
 
 ```bash
@@ -156,7 +164,7 @@ Run before committing or opening a pull request:
 python3 scripts/validate_suite.py
 ```
 
-The validator checks Agent Skills metadata, provider-neutral source content, universal/provider/legacy install paths, context export, project generation, cross-ledger references, source metadata, installer replacement behavior, finance model paths, CAC/LTV/payback and recurring-revenue reconciliation, invalid retention, failed thresholds, tampered economics, rubric scoring, deck generation, and PowerPoint package integrity. GitHub Actions runs the same command on pushes and pull requests.
+The validator checks Agent Skills metadata, provider-neutral source content, universal/provider/legacy install paths, context export, project generation, cross-ledger references, source metadata, installer replacement behavior, finance model paths, CAC/LTV/payback and recurring-revenue reconciliation, cohort-to-cash/AR reconciliation, invalid retention, failed thresholds, tampered economics, rubric scoring, deck generation, and PowerPoint package integrity. GitHub Actions runs the same command on pushes and pull requests.
 
 ## Repository layout
 

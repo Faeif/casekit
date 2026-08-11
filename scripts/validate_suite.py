@@ -389,6 +389,34 @@ def smoke_tests(errors):
             tampered_result = run_unchecked([sys.executable, str(validator / "audit_case.py"), str(economics_project)])
             if tampered_result.returncode == 0 or "LTV:CAC does not reconcile" not in tampered_result.stdout:
                 fail("Validator did not reject tampered LTV:CAC output", errors)
+
+            cfo_script = finance / "scripts" / "cfo_operating_plan.py"
+            cfo_example = finance / "assets" / "cfo-operating-plan-input.example.json"
+            cfo_output = json.loads(run([sys.executable, str(cfo_script), str(cfo_example)]).stdout)
+            if cfo_output["summary"]["ending_cash"] != 211230.0 or cfo_output["summary"]["ending_accounts_receivable"] != 45250.0:
+                fail("CFO operating-plan smoke test returned unexpected cash or AR", errors)
+            if not all(result.get("pass") for result in cfo_output.get("decision_threshold_results", [])):
+                fail("CFO operating-plan example did not pass its decision thresholds", errors)
+            invalid_cfo = json.loads(cfo_example.read_text(encoding="utf-8"))
+            invalid_cfo["cohorts"][0]["retention_rates"][2] = 0.95
+            invalid_cfo_path = temp_path / "invalid-cfo.json"
+            invalid_cfo_path.write_text(json.dumps(invalid_cfo), encoding="utf-8")
+            invalid_cfo_result = run_unchecked([sys.executable, str(cfo_script), str(invalid_cfo_path)])
+            if invalid_cfo_result.returncode == 0 or "retention cannot increase" not in invalid_cfo_result.stderr:
+                fail("CFO operating-plan regression did not reject increasing retention", errors)
+            cfo_project = temp_path / "cfo-project"
+            shutil.copytree(fixture, cfo_project)
+            linked_cfo = replace_fixture_ids(json.loads(cfo_example.read_text(encoding="utf-8")))
+            linked_cfo_path = temp_path / "linked-cfo.json"
+            linked_cfo_path.write_text(json.dumps(linked_cfo), encoding="utf-8")
+            run([sys.executable, str(cfo_script), str(linked_cfo_path), "--output", str(cfo_project / "15-cfo-operating-plan.json")])
+            run([sys.executable, str(validator / "audit_case.py"), str(cfo_project), "--strict"])
+            tampered_cfo = json.loads((cfo_project / "15-cfo-operating-plan.json").read_text(encoding="utf-8"))
+            tampered_cfo["periods"][0]["ending_cash"] = 999999
+            (cfo_project / "15-cfo-operating-plan.json").write_text(json.dumps(tampered_cfo), encoding="utf-8")
+            tampered_cfo_result = run_unchecked([sys.executable, str(validator / "audit_case.py"), str(cfo_project)])
+            if tampered_cfo_result.returncode == 0 or "period 1 ending cash does not reconcile" not in tampered_cfo_result.stdout:
+                fail("Validator did not reject tampered CFO operating-plan output", errors)
         result = run(
             [
                 sys.executable,

@@ -482,6 +482,78 @@ def audit(project):
         except (json.JSONDecodeError, AttributeError) as exc:
             errors.append(f"14-unit-economics.json: invalid JSON structure: {exc}")
 
+    cfo_plan_path = project / "15-cfo-operating-plan.json"
+    if cfo_plan_path.exists():
+        try:
+            cfo_plan = json.loads(cfo_plan_path.read_text(encoding="utf-8"))
+            required_sections = {"starting_cash", "collection_lag_periods", "periods", "summary", "source_or_assumption_ids"}
+            missing_sections = required_sections - set(cfo_plan)
+            if missing_sections:
+                errors.append(f"15-cfo-operating-plan.json: missing sections {', '.join(sorted(missing_sections))}")
+            else:
+                plan_rows = cfo_plan["periods"]
+                if not isinstance(plan_rows, list) or not plan_rows:
+                    errors.append("15-cfo-operating-plan.json: periods must be a non-empty list")
+                else:
+                    prior_cash = float(cfo_plan["starting_cash"])
+                    cumulative_revenue = cumulative_collections = 0.0
+                    for index, row in enumerate(plan_rows, 1):
+                        try:
+                            if int(row["period"]) != index:
+                                errors.append("15-cfo-operating-plan.json: periods must be sequential from 1")
+                            revenue = float(row["recognized_revenue"])
+                            collections = float(row["cash_collections"])
+                            variable_cost = float(row["variable_cost"])
+                            fixed_cost = float(row["fixed_cost"])
+                            acquisition = float(row["acquisition_spend"])
+                            one_time = float(row["one_time_cost"])
+                            expected_operating = revenue - variable_cost - fixed_cost - acquisition - one_time
+                            expected_cash_flow = collections - variable_cost - fixed_cost - acquisition - one_time
+                            if not close_enough(float(row["operating_result"]), expected_operating):
+                                errors.append(f"15-cfo-operating-plan.json: period {index} operating result does not reconcile")
+                            if not close_enough(float(row["net_cash_flow"]), expected_cash_flow):
+                                errors.append(f"15-cfo-operating-plan.json: period {index} net cash flow does not reconcile")
+                            expected_ending_cash = prior_cash + expected_cash_flow
+                            if not close_enough(float(row["ending_cash"]), expected_ending_cash):
+                                errors.append(f"15-cfo-operating-plan.json: period {index} ending cash does not reconcile")
+                            cumulative_revenue += revenue
+                            cumulative_collections += collections
+                            if not close_enough(float(row["accounts_receivable"]), cumulative_revenue - cumulative_collections):
+                                errors.append(f"15-cfo-operating-plan.json: period {index} accounts receivable does not reconcile")
+                            prior_cash = float(row["ending_cash"])
+                        except (KeyError, TypeError, ValueError):
+                            errors.append(f"15-cfo-operating-plan.json: period {index} has invalid numeric fields")
+                    try:
+                        summary = cfo_plan["summary"]
+                        if not close_enough(float(summary["recognized_revenue"]), cumulative_revenue):
+                            errors.append("15-cfo-operating-plan.json: summary recognized revenue does not reconcile")
+                        if not close_enough(float(summary["cash_collections"]), cumulative_collections):
+                            errors.append("15-cfo-operating-plan.json: summary cash collections does not reconcile")
+                        if not close_enough(float(summary["ending_cash"]), prior_cash):
+                            errors.append("15-cfo-operating-plan.json: summary ending cash does not reconcile")
+                        expected_trough = min(float(row["ending_cash"]) for row in plan_rows)
+                        if not close_enough(float(summary["cash_trough"]), expected_trough):
+                            errors.append("15-cfo-operating-plan.json: cash trough does not reconcile")
+                    except (KeyError, TypeError, ValueError):
+                        errors.append("15-cfo-operating-plan.json: summary values cannot be reconciled")
+                valid_refs = sources | assumption_ids | metric_ids | claims
+                for ref in cfo_plan.get("source_or_assumption_ids", []):
+                    if ref not in valid_refs:
+                        errors.append(f"15-cfo-operating-plan.json: unresolved evidence reference {ref}")
+                for result in cfo_plan.get("decision_threshold_results", []):
+                    try:
+                        actual = float(result["actual"]) if result.get("actual") is not None else None
+                        threshold = float(result["threshold"])
+                        expected_pass = actual is not None and result["operator"] == ">=" and actual >= threshold
+                        if result.get("pass") is not expected_pass:
+                            errors.append(f"15-cfo-operating-plan.json: threshold result does not reconcile for {result.get('metric', 'unknown')}")
+                    except (KeyError, TypeError, ValueError):
+                        errors.append(f"15-cfo-operating-plan.json: invalid threshold result for {result.get('metric', 'unknown')}")
+                    if result.get("pass") is False:
+                        warnings.append(f"15-cfo-operating-plan.json: failed decision threshold {result.get('metric', 'unknown')}")
+        except (json.JSONDecodeError, AttributeError) as exc:
+            errors.append(f"15-cfo-operating-plan.json: invalid JSON structure: {exc}")
+
     counts = {name: len(rows) for name, rows in tables.items()}
     counts.update({"claims": len(claims), "sources": len(sources)})
     if option_path.exists():
@@ -492,6 +564,8 @@ def audit(project):
         counts["engineering_level"] = engineering_level
     if economics_path.exists():
         counts["unit_economics"] = 1
+    if cfo_plan_path.exists():
+        counts["cfo_operating_plan"] = 1
     return errors, warnings, counts
 
 

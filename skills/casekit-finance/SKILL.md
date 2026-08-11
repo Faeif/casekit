@@ -61,6 +61,14 @@ Change the funnel to fit the business model, but define every transition and den
 
 Select the model before calculating. Read `references/model-router.md`, then use `scripts/model_router.py` for supported patterns. For acquisition, retention, recurring revenue, or cash questions, read `references/unit-economics.md` and run `scripts/unit_economics.py`. Read `references/methodology.md` for formulas, `references/five-why-defense.md` for judge defense, and `references/validation-gates.md` for thresholds and kill criteria. Use `assets/finance-output.md` for delivery. For a launch event, read `references/launch-event-example.md`.
 
+## CFO operating layer
+
+Use this layer whenever the recommendation needs funding, a launch budget, a pilot plan, a monthly operating forecast, or a claim that the plan can be managed after the pitch. Read `references/cfo-operating-controls.md` and run `scripts/cfo_operating_plan.py` with `assets/cfo-operating-plan-input.example.json`.
+
+This model is deliberately cash-aware: recognized revenue is not cash. It forecasts cohorts into active customers, revenue, contribution, cash collections, operating spend, ending cash, accounts receivable, cash trough, and period-level variance when actuals are supplied.
+
+For each period, declare collection lag, customer cohort retention, price, variable cost, fixed cost, acquisition spend, one-time spend, and source or assumption IDs. Run base, downside, and upside as separate named files; never hide a liquidity failure behind annual ARR.
+
 ## Assumption protocol
 
 For each uncertain input:
@@ -94,6 +102,10 @@ Use a range wider than the source uncertainty when the context transfer is weak.
 - Calculate LTV:CAC and payback with an explicitly selected CAC basis and case-specific thresholds.
 - For recurring models, reconcile MRR movement, GRR, NRR, ARR run rate, churn, and ending MRR.
 - For cash-constrained cases, show burn, runway, collection timing, and working-capital effects when material.
+- Reconcile recognized revenue, cash collections, accounts receivable, contribution, operating result, and ending cash by period.
+- Link staffing, service, inventory, or API capacity to the cost plan when they constrain growth.
+- State budget owner, spend cap, approval gate, variance review cadence, and what triggers a reforecast.
+- Distinguish a forecast from an actual; actuals may update the forecast but must not overwrite its original decision basis.
 
 ## Strategy and activity linkage
 
@@ -117,11 +129,12 @@ Apply 5 Why to the most sensitive numbers, not mechanically to every cell. Conti
 4. Required-performance calculation versus forecast.
 5. Cost model and capacity constraints.
 6. Unit economics: CAC bases, cohort contribution LTV, LTV:CAC, CAC payback, recurring-revenue retention, contribution, break-even, cash/runway, and ROI when applicable.
-7. Low/Base/High scenarios.
-8. Sensitivity and highest-value validation tests.
-9. 5 Why defense for critical inputs.
-10. Recommendation, risks, what changes the decision, and CaseKit handoff.
+7. CFO operating plan when material: monthly cohort/revenue/cash bridge, working capital, cash trough, budget gate, and forecast-versus-actual variance.
+8. Low/Base/High scenarios.
+9. Sensitivity and highest-value validation tests.
+10. 5 Why defense for critical inputs.
+11. Recommendation, risks, what changes the decision, and CaseKit handoff.
 
 Include pass/iterate/stop thresholds for the highest-sensitivity assumptions. A failed stop threshold must trigger reframe, cost reduction, channel change, or recommendation withdrawal—not a rewritten optimistic narrative.
 
-Run `scripts/forecast.py` for detailed launch/event funnels and `scripts/model_router.py` for the supported model families in `references/model-router.md`. Run `scripts/unit_economics.py` for cohort acquisition/value, recurring revenue, and cash metrics. Run `scripts/sensitivity.py` to rank first-order numeric drivers around a selected scenario. Do not let script output replace reasoning or source validation.
+Run `scripts/forecast.py` for detailed launch/event funnels and `scripts/model_router.py` for the supported model families in `references/model-router.md`. Run `scripts/unit_economics.py` for cohort acquisition/value, recurring revenue, and cash metrics. Run `scripts/cfo_operating_plan.py` for a monthly cohort-to-cash plan and variance review. Run `scripts/sensitivity.py` to rank first-order numeric drivers around a selected scenario. Do not let script output replace reasoning or source validation.

@@ -34,6 +34,20 @@ Do not pass a CAC/LTV claim unless:
 
 Fail the gate when the selected LTV:CAC or payback misses its precommitted threshold, or when payback lies beyond the observed/modeled horizon without an explicit risk response. A benchmark from another company never substitutes for the team's threshold logic.
 
+## CFO operating-plan gate
+
+Do not claim a plan is fundable or operationally manageable unless:
+
+- recognized revenue and cash collections are explicitly separated by collection terms;
+- each active-customer cohort is covered by a retention curve for the modeled horizon;
+- revenue, contribution, operating result, net cash flow, ending cash, and accounts receivable reconcile each period;
+- the lowest cash balance has a funding/spend-cap response;
+- variable cost includes the binding service, inventory, staffing, or infrastructure cost where material;
+- every planned spend item and actual variance is linked to `ASM`, `SRC`, or `MET` IDs;
+- budget-release and downside triggers are set before performance is observed.
+
+Fail the gate if cash timing is omitted, if a cash trough breaches the approved floor, or if annualized revenue is used to hide an unaffordable monthly plan.
+
 ## Typical validation methods
 
 - Price: paid pilot, pre-order, refundable deposit, current spend evidence, price-choice experiment.
