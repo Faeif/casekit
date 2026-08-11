@@ -1,0 +1,34 @@
+{
+  "name": "casekit",
+  "version": "0.6.0",
+  "license": "MIT",
+  "format": {
+    "standard": "Agent Skills",
+    "specification": "https://agentskills.io/specification",
+    "required_frontmatter": ["name", "description"]
+  },
+  "native_clients": {
+    "codex": ".agents/skills",
+    "claude-code": ".claude/skills",
+    "gemini-cli": ".agents/skills",
+    "google-antigravity": ".agents/skills"
+  },
+  "skills": [
+    "casekit-orchestrator",
+    "casekit-discovery",
+    "casekit-research",
+    "casekit-strategy",
+    "casekit-finance",
+    "casekit-product-tech",
+    "casekit-marketing-growth",
+    "casekit-operations",
+    "casekit-pitch",
+    "casekit-validator",
+    "casekit-deck",
+    "casekit-red-team"
+  ],
+  "optional_integrations": {
+    "gstack": "https://github.com/garrytan/gstack",
+    "startup-skill": "https://github.com/ferdinandobons/startup-skill"
+  }
+}

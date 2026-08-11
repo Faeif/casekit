@@ -1,0 +1,4 @@
+interface:
+  display_name: "CaseKit Strategy"
+  short_description: "Compare evidence-led case options"
+  default_prompt: "Use $casekit-strategy to compare strategic options and recommend the strongest evidence-led choice."

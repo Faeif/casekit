@@ -1,0 +1,4 @@
+interface:
+  display_name: "CaseKit Discovery"
+  short_description: "Challenge premises and validate customer pain"
+  default_prompt: "Use $casekit-discovery to interrogate this problem, expose risky premises, and define the narrowest evidence-backed opportunity."

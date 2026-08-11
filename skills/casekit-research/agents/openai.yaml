@@ -1,0 +1,4 @@
+interface:
+  display_name: "CaseKit Research"
+  short_description: "Build evidence ledgers and defensible insights"
+  default_prompt: "Use $casekit-research to investigate this case and return traceable claims with source-quality ratings."

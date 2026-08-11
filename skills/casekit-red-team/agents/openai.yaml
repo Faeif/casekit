@@ -1,0 +1,4 @@
+interface:
+  display_name: "CaseKit Red Team"
+  short_description: "Stress-test cases against judging criteria"
+  default_prompt: "Use $casekit-red-team to challenge this submission, expose weak assumptions, and produce a prioritized fix list."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "CaseKit Pitch"
+  short_description: "Turn analysis into a judge-ready pitch narrative"
+  default_prompt: "Use $casekit-pitch to create a judge-focused storyline, slide plan, and speaking script from the case evidence."

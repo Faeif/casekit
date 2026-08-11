@@ -1,0 +1,3 @@
+risk_id,risk,category,likelihood,impact,early_warning,mitigation,contingency,owner,status
+RSK-001,Purchase conversion is below the economic threshold,commercial,medium,high,Preorders fall below 20 percent,Test offer and message before event,Reduce fixed spend or stop launch,Finance,open
+RSK-002,Demand exceeds service capacity,operations,low,high,Queue exceeds 10 minutes,Timed slots and capacity dashboard,Waitlist and post-event fulfillment,Operations,open

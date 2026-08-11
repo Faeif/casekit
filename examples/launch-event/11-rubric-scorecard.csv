@@ -1,0 +1,6 @@
+criterion,weight,score,max_score,evidence,gap,owner,status
+Problem and insight,20,4,5,CLM-001|PRM-001,Needs direct observed customer behavior,Research,repair
+Impact and economics,25,4,5,MET-001|ASM-004,Purchase conversion remains unvalidated,Finance,repair
+Innovation and solution,20,4,5,DEC-001,Prototype proof omitted from synthetic fixture,Product,repair
+Feasibility and execution,20,4,5,CLM-002|EXP-002,Capacity requires observed simulation,Operations,repair
+Pitch and delivery,15,4,5,12-deck-spec.json,Requires human rehearsal,Deck,repair

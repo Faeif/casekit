@@ -1,0 +1,9 @@
+{
+  "model_type": "subscription",
+  "currency": "THB",
+  "scenarios": {
+    "low": {"leads": 8000, "trial_rate": 0.10, "paid_rate": 0.18, "monthly_price": 249, "active_months": 5, "variable_cost_per_paid_user_month": 55, "acquisition_cost": 250000, "fixed_cost": 400000},
+    "base": {"leads": 10000, "trial_rate": 0.14, "paid_rate": 0.24, "monthly_price": 249, "active_months": 7, "variable_cost_per_paid_user_month": 48, "acquisition_cost": 300000, "fixed_cost": 400000},
+    "high": {"leads": 13000, "trial_rate": 0.17, "paid_rate": 0.29, "monthly_price": 269, "active_months": 9, "variable_cost_per_paid_user_month": 43, "acquisition_cost": 360000, "fixed_cost": 400000}
+  }
+}

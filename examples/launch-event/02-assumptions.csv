@@ -1,0 +1,6 @@
+assumption_id,variable,definition,unit,low,base,high,basis,source_ids,confidence,sensitivity,validation_method,owner,status
+ASM-001,reach_rate,Share of eligible audience receiving an effective exposure,rate,0.30,0.40,0.50,team-judgment,SRC-001,medium,high,Measure unique delivered invitations,Marketing,open
+ASM-002,response_rate,Share of reached audience visiting or registering,rate,0.15,0.20,0.25,team-judgment,SRC-001,medium,high,Track campaign link and registration,Marketing,open
+ASM-003,qualified_rate,Share of responders matching the offer criteria,rate,0.40,0.50,0.60,team-judgment,SRC-001,medium,medium,Verify eligibility at registration,Research,open
+ASM-004,purchase_rate,Share of qualified people placing an order,rate,0.20,0.25,0.30,team-judgment,SRC-001,low,high,Run preorder landing-page experiment,Finance,open
+ASM-005,average_order_value,Average gross order value,THB/order,900,1000,1100,team-judgment,SRC-001,medium,high,Test bundle choice and checkout,Finance,open

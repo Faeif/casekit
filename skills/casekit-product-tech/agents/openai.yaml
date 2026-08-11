@@ -1,0 +1,4 @@
+interface:
+  display_name: "CaseKit Product & Tech"
+  short_description: "Scope a credible MVP and technical plan"
+  default_prompt: "Use $casekit-product-tech to translate the case strategy into a feasible MVP, architecture, and demo plan."

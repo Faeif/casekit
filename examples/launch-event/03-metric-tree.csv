@@ -1,0 +1,8 @@
+metric_id,parent_metric_id,metric,metric_type,formula,unit,time_horizon,low,base,high,source_or_assumption_ids,owner
+MET-001,,Gross revenue,outcome,orders * average_order_value,THB,launch period,324000,1000000,1500000,ASM-004|ASM-005,Finance
+MET-002,MET-001,Orders,driver,min(qualified * purchase_rate; capacity),orders,launch period,360,1000,1500,ASM-004|SRC-001,Finance
+MET-003,MET-002,Reached audience,driver,eligible audience * reach_rate,people,launch period,30000,40000,50000,ASM-001,Marketing
+MET-004,MET-002,Qualified audience,driver,reached * response_rate * qualified_rate,people,launch period,1800,4000,7500,ASM-002|ASM-003,Research
+MET-005,MET-002,Order capacity,capacity,staff stations * orders per station,orders,launch period,1500,1500,1500,SRC-001,Operations
+MET-006,MET-003,Eligible audience,driver,eligible members,people,launch period,100000,100000,100000,SRC-001,Research
+MET-007,MET-004,Responses,driver,reached audience * response_rate,people,launch period,4500,8000,12500,ASM-002,Marketing

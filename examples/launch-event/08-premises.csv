@@ -1,0 +1,3 @@
+premise_id,premise,type,evidence_ids,confidence,decision_impact,falsification_test,owner,status
+PRM-001,Qualified visitors will purchase at least at the stop threshold,desirability,CLM-001|SRC-001,low,high,Run a tracked preorder test,Finance,open
+PRM-002,The team can process up to 1500 orders in the launch period,feasibility,CLM-002|SRC-001,medium,high,Run a timed service simulation,Operations,open

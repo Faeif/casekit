@@ -1,0 +1,59 @@
+{
+  "meta": {
+    "title": "Synthetic launch-event case",
+    "subtitle": "Evidence-led pilot recommendation",
+    "team": "CaseKit Fixture Team",
+    "language": "en-US",
+    "currency": "THB",
+    "font_head": "Arial",
+    "font_body": "Arial",
+    "aspect_ratio": "16:9"
+  },
+  "slides": [
+    {
+      "type": "cover",
+      "headline": "Turn launch attention into measurable revenue",
+      "subhead": "A capacity-aware pilot with explicit scale gates",
+      "speaker_notes": "This is a synthetic CaseKit regression fixture."
+    },
+    {
+      "type": "metric",
+      "headline": "The base case reaches the revenue target within capacity",
+      "metric": "THB 1.0M",
+      "label": "Base-case gross revenue forecast",
+      "comparison": "1,000 orders versus 1,500 capacity",
+      "body": ["Forecast is separate from target", "Capacity caps the upside", "Purchase conversion is the top sensitivity"],
+      "metric_bindings": [{"metric_id": "MET-001", "scenario": "base", "value": 1000000}],
+      "evidence_ids": ["MET-001", "MET-005", "ASM-004"]
+    },
+    {
+      "type": "funnel",
+      "headline": "Four observable transitions explain the forecast",
+      "stages": [
+        {"label": "Eligible", "value": 100000, "metric_id": "MET-006", "scenario": "base"},
+        {"label": "Reached", "value": 40000, "metric_id": "MET-003", "scenario": "base"},
+        {"label": "Responded", "value": 8000, "metric_id": "MET-007", "scenario": "base"},
+        {"label": "Qualified", "value": 4000, "metric_id": "MET-004", "scenario": "base"},
+        {"label": "Orders", "value": 1000, "metric_id": "MET-002", "scenario": "base"}
+      ],
+      "evidence_ids": ["MET-002", "MET-003", "MET-004"]
+    },
+    {
+      "type": "timeline",
+      "headline": "Two validation gates protect the downside before scale",
+      "phases": [
+        {"label": "Validate", "items": ["Preorder test", "Capacity simulation"], "gate": "Pass EXP-001 and EXP-002"},
+        {"label": "Pilot", "items": ["Bounded cohort", "Instrument full funnel"], "gate": "Meet conversion and error guardrails"},
+        {"label": "Scale", "items": ["Release proven channel", "Add capacity by demand"], "gate": "No stop threshold breached"}
+      ],
+      "evidence_ids": ["EXP-001", "EXP-002", "RSK-001"]
+    },
+    {
+      "type": "closing",
+      "headline": "Approve the pilot; scale only on observed conversion",
+      "body": ["Run both tests before irreversible spend", "Stop below the conversion threshold", "Scale the proven channel within capacity"],
+      "ask": "Approve pilot budget and measurement access",
+      "evidence_ids": ["DEC-001", "EXP-001", "MET-005"]
+    }
+  ]
+}

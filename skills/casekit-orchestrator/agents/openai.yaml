@@ -1,0 +1,4 @@
+interface:
+  display_name: "CaseKit Orchestrator"
+  short_description: "Run an evidence-led competition workflow"
+  default_prompt: "Use $casekit-orchestrator to turn this challenge brief into a coordinated, judge-ready case submission."

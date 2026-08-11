@@ -1,0 +1,4 @@
+interface:
+  display_name: "CaseKit Deck"
+  short_description: "Render editable, evidence-linked competition decks"
+  default_prompt: "Use $casekit-deck to turn the approved case narrative into an editable, judge-ready presentation."

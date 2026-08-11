@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "mappings": [
+    {
+      "metric_id": "MET-001",
+      "scenario": "base",
+      "file": "inputs/model.xlsx",
+      "sheet": "Assumptions",
+      "cell": "B2"
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+interface:
+  display_name: "CaseKit Validator"
+  short_description: "Audit evidence, numbers, slides, and submission readiness"
+  default_prompt: "Use $casekit-validator to audit this case end-to-end and return prioritized, evidence-linked repairs."

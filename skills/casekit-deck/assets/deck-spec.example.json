@@ -1,0 +1,58 @@
+{
+  "meta": {
+    "title": "Launch event growth case",
+    "subtitle": "Evidence-led recommendation",
+    "team": "CaseKit Team",
+    "language": "th-TH",
+    "currency": "THB",
+    "font_head": "Arial",
+    "font_body": "Arial",
+    "aspect_ratio": "16:9"
+  },
+  "theme": {
+    "navy": "102A43",
+    "blue": "1677FF",
+    "teal": "0F9D8A",
+    "amber": "F59E0B",
+    "red": "DC2626",
+    "light": "F5F7FA",
+    "ink": "172B4D"
+  },
+  "slides": [
+    {
+      "type": "cover",
+      "headline": "Turn launch attention into measurable revenue",
+      "subhead": "A capacity-aware pilot with explicit scale gates",
+      "speaker_notes": "Open with the decision and quantified value."
+    },
+    {
+      "type": "metric",
+      "headline": "The base case reaches break-even before the target",
+      "metric": "฿1.25M",
+      "label": "Base-case gross revenue",
+      "comparison": "+25% versus target",
+      "body": ["Revenue is forecast, not target", "Capacity cap is included", "Top driver is purchase conversion"],
+      "metric_bindings": [{"metric_id": "MET-001", "scenario": "base", "value": 1250000}],
+      "evidence_ids": ["MET-001", "ASM-004", "SRC-001"]
+    },
+    {
+      "type": "funnel",
+      "headline": "Four observable transitions explain the forecast",
+      "stages": [
+        {"label": "Eligible", "value": 100000, "metric_id": "MET-006", "scenario": "base"},
+        {"label": "Reached", "value": 40000, "metric_id": "MET-003", "scenario": "base"},
+        {"label": "Engaged", "value": 8000, "metric_id": "MET-007", "scenario": "base"},
+        {"label": "Qualified", "value": 4000, "metric_id": "MET-004", "scenario": "base"},
+        {"label": "Orders", "value": 1000, "metric_id": "MET-002", "scenario": "base"}
+      ],
+      "evidence_ids": ["MET-002", "ASM-001", "ASM-002"]
+    },
+    {
+      "type": "closing",
+      "headline": "Approve the pilot, then scale only on observed conversion",
+      "body": ["Run a two-week validation sprint", "Stop below the kill threshold", "Scale the proven channel"],
+      "ask": "Approve pilot budget and data access",
+      "evidence_ids": ["EXP-001", "DEC-001"]
+    }
+  ]
+}

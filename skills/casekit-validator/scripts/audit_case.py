@@ -1,0 +1,419 @@
+#!/usr/bin/env python3
+"""Audit CaseKit ledgers and deck spec for cross-artifact integrity."""
+
+import argparse
+import csv
+import json
+import re
+import sys
+from collections import Counter
+from datetime import date
+from pathlib import Path
+from urllib.parse import urlparse
+
+
+ID_PATTERNS = {
+    "claim_id": r"CLM-\d{3,}",
+    "source_id": r"SRC-\d{3,}",
+    "assumption_id": r"ASM-\d{3,}",
+    "metric_id": r"MET-\d{3,}",
+    "decision_id": r"DEC-\d{3,}",
+    "risk_id": r"RSK-\d{3,}",
+    "premise_id": r"PRM-\d{3,}",
+    "experiment_id": r"EXP-\d{3,}",
+    "option_id": r"OPT-\d{3,}",
+}
+
+FILES = {
+    "evidence": ("01-evidence-ledger.csv", ["claim_id", "claim", "source_id", "source_type", "url", "accessed_date", "page_or_section", "quality", "recency", "relevance", "status"], []),
+    "assumptions": ("02-assumptions.csv", ["assumption_id", "variable", "unit", "low", "base", "high", "basis", "source_ids", "confidence", "sensitivity", "validation_method", "owner", "status"], ["assumption_id"]),
+    "metrics": ("03-metric-tree.csv", ["metric_id", "parent_metric_id", "metric", "metric_type", "formula", "unit", "source_or_assumption_ids", "owner"], ["metric_id"]),
+    "decisions": ("04-decision-log.csv", ["decision_id", "date", "decision", "alternatives", "criteria", "rationale", "evidence_and_assumption_ids", "owner", "status"], ["decision_id"]),
+    "risks": ("05-risk-register.csv", ["risk_id", "risk", "category", "likelihood", "impact", "mitigation", "contingency", "owner", "status"], ["risk_id"]),
+    "premises": ("08-premises.csv", ["premise_id", "premise", "type", "evidence_ids", "confidence", "decision_impact", "falsification_test", "owner", "status"], ["premise_id"]),
+    "experiments": ("09-experiments.csv", ["experiment_id", "premise_ids", "method", "pass_threshold", "stop_threshold", "owner", "deadline", "status"], ["experiment_id"]),
+}
+
+ENUMS = {
+    "confidence": {"low", "medium", "high"},
+    "sensitivity": {"low", "medium", "high"},
+    "quality": {"low", "medium", "high"},
+    "recency": {"low", "medium", "high"},
+    "relevance": {"low", "medium", "high"},
+    "metric_type": {"north-star", "outcome", "driver", "guardrail", "diagnostic", "capacity"},
+    "likelihood": {"low", "medium", "high"},
+    "impact": {"low", "medium", "high"},
+}
+
+GROUP_ENUMS = {
+    "evidence": {"status": {"verified", "partially-verified", "unverified", "superseded"}},
+    "assumptions": {
+        "basis": {"primary-research", "secondary-research", "analogy", "derived", "management-target", "team-judgment"},
+        "status": {"open", "validated", "rejected", "superseded"},
+    },
+    "decisions": {"status": {"proposed", "approved", "rejected", "superseded", "revisit"}},
+    "risks": {"status": {"open", "mitigated", "accepted", "closed"}},
+    "premises": {
+        "type": {"desirability", "feasibility", "viability", "usability", "legal", "operational", "growth"},
+        "status": {"open", "validated", "falsified", "superseded"},
+    },
+    "experiments": {"status": {"planned", "running", "passed", "iterated", "stopped", "closed"}},
+}
+
+NONEMPTY = {
+    "evidence": {"claim_id", "claim", "source_id", "publisher", "title", "url", "accessed_date", "page_or_section", "interpretation", "owner"},
+    "assumptions": {"assumption_id", "variable", "definition", "unit", "low", "base", "high", "basis", "validation_method", "owner", "status"},
+    "metrics": {"metric_id", "metric", "metric_type", "formula", "unit", "time_horizon", "source_or_assumption_ids", "owner"},
+    "decisions": {"decision_id", "date", "decision", "alternatives", "criteria", "rationale", "evidence_and_assumption_ids", "owner", "status"},
+    "risks": {"risk_id", "risk", "category", "likelihood", "impact", "mitigation", "contingency", "owner", "status"},
+    "premises": {"premise_id", "premise", "type", "confidence", "decision_impact", "falsification_test", "owner", "status"},
+    "experiments": {"experiment_id", "premise_ids", "method", "pass_threshold", "stop_threshold", "owner", "deadline", "status"},
+}
+
+
+def split_ids(value):
+    return [part.strip() for part in re.split(r"[|;,\s]+", value or "") if part.strip()]
+
+
+def read_csv(path):
+    with path.open(newline="", encoding="utf-8-sig") as handle:
+        reader = csv.DictReader(handle)
+        return reader.fieldnames or [], list(reader)
+
+
+def is_blank(row):
+    return not any((value or "").strip() for value in row.values())
+
+
+def numeric(value):
+    return float((value or "").replace(",", "").strip())
+
+
+def close_enough(left, right):
+    return abs(left - right) <= max(abs(right) * 1e-6, 1e-6)
+
+
+def audit(project):
+    errors, warnings = [], []
+    tables, locations, ids = {}, {}, set()
+
+    for group, (filename, required, unique_fields) in FILES.items():
+        path = project / filename
+        if not path.exists():
+            errors.append(f"{filename}: missing required artifact")
+            continue
+        fields, rows = read_csv(path)
+        rows = [row for row in rows if not is_blank(row)]
+        missing = [field for field in required if field not in fields]
+        if missing:
+            errors.append(f"{filename}: missing columns {', '.join(missing)}")
+            continue
+        tables[group] = rows
+        for line, row in enumerate(rows, 2):
+            for field in NONEMPTY[group]:
+                if not (row.get(field) or "").strip():
+                    errors.append(f"{filename}:{line}: blank required value {field}")
+            for field in unique_fields:
+                value = (row.get(field) or "").strip()
+                if not value:
+                    errors.append(f"{filename}:{line}: blank {field}")
+                    continue
+                pattern = ID_PATTERNS[field]
+                if not re.fullmatch(pattern, value):
+                    errors.append(f"{filename}:{line}: invalid {field} '{value}'")
+                if value in locations:
+                    errors.append(f"{filename}:{line}: duplicate ID {value}; first at {locations[value]}")
+                else:
+                    locations[value] = f"{filename}:{line}"
+                    ids.add(value)
+            for field, allowed in ENUMS.items():
+                if field in fields and (row.get(field) or "").strip():
+                    value = row[field].strip().lower()
+                    if value not in allowed:
+                        errors.append(f"{filename}:{line}: invalid {field} '{row[field]}'")
+            for field, allowed in GROUP_ENUMS.get(group, {}).items():
+                value = (row.get(field) or "").strip().lower()
+                if value and value not in allowed:
+                    errors.append(f"{filename}:{line}: invalid {field} '{row[field]}'")
+
+    evidence_pairs = set()
+    sources, claims = set(), set()
+    for line, row in enumerate(tables.get("evidence", []), 2):
+        claim_id, source_id = row["claim_id"].strip(), row["source_id"].strip()
+        for field, value in (("claim_id", claim_id), ("source_id", source_id)):
+            if not re.fullmatch(ID_PATTERNS[field], value):
+                errors.append(f"01-evidence-ledger.csv:{line}: invalid {field} '{value}'")
+        pair = (claim_id, source_id)
+        if pair in evidence_pairs:
+            errors.append(f"01-evidence-ledger.csv:{line}: duplicate claim-source pair {claim_id}/{source_id}")
+        evidence_pairs.add(pair)
+        claims.add(claim_id)
+        sources.add(source_id)
+        ids.update((claim_id, source_id))
+        url = row["url"].strip()
+        parsed = urlparse(url)
+        if parsed.scheme not in {"https", "http"} or not parsed.netloc:
+            errors.append(f"01-evidence-ledger.csv:{line}: invalid source URL '{url}'")
+        try:
+            accessed = date.fromisoformat(row["accessed_date"].strip())
+            if accessed > date.today():
+                errors.append(f"01-evidence-ledger.csv:{line}: accessed_date is in the future")
+        except ValueError:
+            errors.append(f"01-evidence-ledger.csv:{line}: accessed_date must be YYYY-MM-DD")
+        if not row["page_or_section"].strip():
+            errors.append(f"01-evidence-ledger.csv:{line}: missing page_or_section")
+
+    assumption_ids = {row["assumption_id"].strip() for row in tables.get("assumptions", [])}
+    metric_ids = {row["metric_id"].strip() for row in tables.get("metrics", [])}
+    metric_rows = {row["metric_id"].strip(): row for row in tables.get("metrics", [])}
+    premise_ids = {row["premise_id"].strip() for row in tables.get("premises", [])}
+
+    for line, row in enumerate(tables.get("assumptions", []), 2):
+        try:
+            low, base, high = [numeric(row[key]) for key in ("low", "base", "high")]
+            if not low <= base <= high:
+                errors.append(f"02-assumptions.csv:{line}: expected low <= base <= high")
+        except ValueError:
+            warnings.append(f"02-assumptions.csv:{line}: non-numeric scenario; verify ordering manually")
+        for ref in split_ids(row["source_ids"]):
+            if ref not in sources:
+                errors.append(f"02-assumptions.csv:{line}: unresolved source reference {ref}")
+
+    for line, row in enumerate(tables.get("metrics", []), 2):
+        parent = row["parent_metric_id"].strip()
+        if parent and parent not in metric_ids:
+            errors.append(f"03-metric-tree.csv:{line}: unresolved parent metric {parent}")
+        if not row["formula"].strip():
+            errors.append(f"03-metric-tree.csv:{line}: missing formula")
+        for ref in split_ids(row["source_or_assumption_ids"]):
+            if ref not in sources | assumption_ids | metric_ids:
+                errors.append(f"03-metric-tree.csv:{line}: unresolved model reference {ref}")
+
+    for line, row in enumerate(tables.get("decisions", []), 2):
+        try:
+            date.fromisoformat(row.get("date", "").strip())
+        except ValueError:
+            errors.append(f"04-decision-log.csv:{line}: date must be YYYY-MM-DD")
+        for ref in split_ids(row["evidence_and_assumption_ids"]):
+            if ref not in claims | sources | assumption_ids | metric_ids | premise_ids:
+                errors.append(f"04-decision-log.csv:{line}: unresolved decision reference {ref}")
+
+    for line, row in enumerate(tables.get("premises", []), 2):
+        for ref in split_ids(row["evidence_ids"]):
+            if ref not in claims | sources:
+                errors.append(f"08-premises.csv:{line}: unresolved evidence reference {ref}")
+
+    for line, row in enumerate(tables.get("experiments", []), 2):
+        try:
+            date.fromisoformat(row["deadline"].strip())
+        except ValueError:
+            errors.append(f"09-experiments.csv:{line}: deadline must be YYYY-MM-DD")
+        for ref in split_ids(row["premise_ids"]):
+            if ref not in premise_ids:
+                errors.append(f"09-experiments.csv:{line}: unresolved premise reference {ref}")
+
+    option_path = project / "option-portfolio.csv"
+    option_count = 0
+    if option_path.exists():
+        option_fields, option_rows = read_csv(option_path)
+        option_rows = [row for row in option_rows if not is_blank(row)]
+        required_option_fields = {
+            "option_id", "option_name", "rubric_fit", "impact", "feasibility", "viability",
+            "differentiation", "evidence_confidence", "evidence_ids", "assumption_ids", "status",
+        }
+        missing_option_fields = sorted(required_option_fields - set(option_fields))
+        if missing_option_fields:
+            errors.append(f"option-portfolio.csv: missing columns {', '.join(missing_option_fields)}")
+        else:
+            option_ids = set()
+            for line, row in enumerate(option_rows, 2):
+                option_id = row["option_id"].strip()
+                if not re.fullmatch(ID_PATTERNS["option_id"], option_id):
+                    errors.append(f"option-portfolio.csv:{line}: invalid option_id '{option_id}'")
+                if option_id in option_ids:
+                    errors.append(f"option-portfolio.csv:{line}: duplicate option_id {option_id}")
+                option_ids.add(option_id)
+                if not row["option_name"].strip():
+                    errors.append(f"option-portfolio.csv:{line}: blank option_name")
+                for field in ("rubric_fit", "impact", "feasibility", "viability", "differentiation", "evidence_confidence"):
+                    try:
+                        value = float(row[field])
+                        if not 1 <= value <= 5:
+                            errors.append(f"option-portfolio.csv:{line}: {field} must be between 1 and 5")
+                    except ValueError:
+                        errors.append(f"option-portfolio.csv:{line}: {field} must be numeric")
+                for ref in split_ids(row["evidence_ids"]):
+                    if ref not in claims | sources:
+                        errors.append(f"option-portfolio.csv:{line}: unresolved evidence reference {ref}")
+                for ref in split_ids(row["assumption_ids"]):
+                    if ref not in assumption_ids:
+                        errors.append(f"option-portfolio.csv:{line}: unresolved assumption reference {ref}")
+                if row["status"].strip().lower() not in {"proposed", "chosen", "rejected", "revisit"}:
+                    errors.append(f"option-portfolio.csv:{line}: invalid status '{row['status']}'")
+            if option_rows and sum(row["status"].strip().lower() == "chosen" for row in option_rows) != 1:
+                errors.append("option-portfolio.csv: exactly one nonblank option must have status 'chosen'")
+            option_count = len(option_rows)
+
+    deck_path = project / "12-deck-spec.json"
+    if deck_path.exists():
+        try:
+            deck = json.loads(deck_path.read_text(encoding="utf-8"))
+            slides = deck.get("slides", [])
+            if not slides:
+                errors.append("12-deck-spec.json: slides must be non-empty")
+            for index, slide in enumerate(slides, 1):
+                if not slide.get("headline"):
+                    errors.append(f"12-deck-spec.json: slide {index} missing headline")
+                for ref in slide.get("evidence_ids", []):
+                    if ref not in ids:
+                        errors.append(f"12-deck-spec.json: slide {index} unresolved evidence ID {ref}")
+                bindings = list(slide.get("metric_bindings", []))
+                bindings.extend(stage for stage in slide.get("stages", []) if stage.get("metric_id"))
+                if slide.get("type") == "metric" and not bindings:
+                    errors.append(f"12-deck-spec.json: slide {index} metric slide has no numeric binding")
+                for binding in bindings:
+                    metric_id = binding.get("metric_id", "")
+                    scenario = binding.get("scenario", "base")
+                    if metric_id not in metric_rows:
+                        errors.append(f"12-deck-spec.json: slide {index} unresolved bound metric {metric_id}")
+                        continue
+                    if scenario not in {"low", "base", "high"}:
+                        errors.append(f"12-deck-spec.json: slide {index} invalid metric scenario {scenario}")
+                        continue
+                    try:
+                        deck_value = numeric(str(binding.get("value", "")))
+                        ledger_value = numeric(metric_rows[metric_id].get(scenario, ""))
+                        tolerance = max(abs(ledger_value) * 1e-9, 1e-9)
+                        if abs(deck_value - ledger_value) > tolerance:
+                            errors.append(f"12-deck-spec.json: slide {index} number drift for {metric_id}/{scenario}: deck={deck_value:g} ledger={ledger_value:g}")
+                    except ValueError:
+                        errors.append(f"12-deck-spec.json: slide {index} non-numeric binding for {metric_id}/{scenario}")
+                if len(slide.get("body", [])) > 6:
+                    warnings.append(f"12-deck-spec.json: slide {index} has more than 6 body items")
+        except (json.JSONDecodeError, AttributeError) as exc:
+            errors.append(f"12-deck-spec.json: invalid JSON structure: {exc}")
+    else:
+        warnings.append("12-deck-spec.json: not present; required before deck freeze")
+
+    economics_path = project / "14-unit-economics.json"
+    if economics_path.exists():
+        try:
+            economics = json.loads(economics_path.read_text(encoding="utf-8"))
+            require_sections = {"acquisition", "unit_economics", "cohort_periods", "source_or_assumption_ids"}
+            missing_sections = require_sections - set(economics)
+            if missing_sections:
+                errors.append(f"14-unit-economics.json: missing sections {', '.join(sorted(missing_sections))}")
+            else:
+                acquisition = economics["acquisition"]
+                unit = economics["unit_economics"]
+                for field in ("selected_cac", "discounted_cohort_ltv_contribution", "ltv_to_cac", "modeled_horizon_periods"):
+                    if field not in unit:
+                        errors.append(f"14-unit-economics.json: missing unit_economics.{field}")
+                try:
+                    cac = float(unit["selected_cac"])
+                    ltv = float(unit["discounted_cohort_ltv_contribution"])
+                    reported_ratio = float(unit["ltv_to_cac"])
+                    if cac <= 0 or ltv < 0:
+                        errors.append("14-unit-economics.json: CAC must be positive and LTV non-negative")
+                    elif not close_enough(reported_ratio, ltv / cac):
+                        errors.append("14-unit-economics.json: LTV:CAC does not reconcile to LTV and selected CAC")
+                except (KeyError, TypeError, ValueError):
+                    errors.append("14-unit-economics.json: unit-economics values must be numeric")
+                try:
+                    customers = float(acquisition["new_customers"])
+                    attributable_cac = float(acquisition["attributable_spend"]) / customers
+                    fully_loaded_cac = float(acquisition["fully_loaded_spend"]) / customers
+                    if not close_enough(float(acquisition["attributable_cac"]), attributable_cac):
+                        errors.append("14-unit-economics.json: attributable CAC does not reconcile")
+                    if not close_enough(float(acquisition["fully_loaded_cac"]), fully_loaded_cac):
+                        errors.append("14-unit-economics.json: fully loaded CAC does not reconcile")
+                    paid_customers = float(acquisition.get("paid_customers", 0))
+                    if paid_customers and not close_enough(float(acquisition["paid_cac"]), float(acquisition["paid_spend"]) / paid_customers):
+                        errors.append("14-unit-economics.json: paid CAC does not reconcile")
+                    selected_expected = attributable_cac if economics.get("cac_basis_used_for_decision") == "attributable" else fully_loaded_cac
+                    if not close_enough(float(unit["selected_cac"]), selected_expected):
+                        errors.append("14-unit-economics.json: selected CAC does not match declared CAC basis")
+                except (KeyError, TypeError, ValueError, ZeroDivisionError):
+                    errors.append("14-unit-economics.json: acquisition values cannot be reconciled")
+                if unit.get("modeled_horizon_periods") != len(economics.get("cohort_periods", [])):
+                    errors.append("14-unit-economics.json: modeled horizon does not match cohort rows")
+                recurring = economics.get("recurring_revenue")
+                if recurring:
+                    try:
+                        start = float(recurring["starting_mrr"])
+                        ending = start + float(recurring["new_mrr"]) + float(recurring["expansion_mrr"]) - float(recurring["contraction_mrr"]) - float(recurring["churned_mrr"])
+                        grr = (start - float(recurring["contraction_mrr"]) - float(recurring["churned_mrr"])) / start
+                        nrr = (start + float(recurring["expansion_mrr"]) - float(recurring["contraction_mrr"]) - float(recurring["churned_mrr"])) / start
+                        if not close_enough(float(recurring["ending_mrr"]), ending):
+                            errors.append("14-unit-economics.json: ending MRR does not reconcile")
+                        if not close_enough(float(recurring["gross_revenue_retention"]), grr):
+                            errors.append("14-unit-economics.json: GRR does not reconcile")
+                        if not close_enough(float(recurring["net_revenue_retention"]), nrr):
+                            errors.append("14-unit-economics.json: NRR does not reconcile")
+                        if not close_enough(float(recurring["arr_run_rate"]), ending * float(recurring["periods_per_year"])):
+                            errors.append("14-unit-economics.json: ARR run rate does not reconcile")
+                    except (KeyError, TypeError, ValueError, ZeroDivisionError):
+                        errors.append("14-unit-economics.json: recurring-revenue values cannot be reconciled")
+                cash = economics.get("cash")
+                if cash:
+                    try:
+                        burn = max(float(cash["cash_outflow_per_period"]) - float(cash["cash_inflow_per_period"]), 0)
+                        if not close_enough(float(cash["net_burn_per_period"]), burn):
+                            errors.append("14-unit-economics.json: net burn does not reconcile")
+                        expected_runway = float(cash["cash_balance"]) / burn if burn else None
+                        reported_runway = cash.get("runway_periods")
+                        if expected_runway is None and reported_runway is not None:
+                            errors.append("14-unit-economics.json: runway must be null when net burn is zero")
+                        elif expected_runway is not None and not close_enough(float(reported_runway), expected_runway):
+                            errors.append("14-unit-economics.json: runway does not reconcile")
+                    except (KeyError, TypeError, ValueError, ZeroDivisionError):
+                        errors.append("14-unit-economics.json: cash values cannot be reconciled")
+                valid_refs = sources | assumption_ids | metric_ids | claims
+                for ref in economics.get("source_or_assumption_ids", []):
+                    if ref not in valid_refs:
+                        errors.append(f"14-unit-economics.json: unresolved evidence reference {ref}")
+                for result in economics.get("decision_threshold_results", []):
+                    try:
+                        actual = float(result["actual"]) if result.get("actual") is not None else None
+                        threshold = float(result["threshold"])
+                        operator = result["operator"]
+                        expected_pass = actual is not None and ((operator == ">=" and actual >= threshold) or (operator == "<=" and actual <= threshold))
+                        if operator not in {">=", "<="} or result.get("pass") is not expected_pass:
+                            errors.append(f"14-unit-economics.json: threshold result does not reconcile for {result.get('metric', 'unknown')}")
+                    except (KeyError, TypeError, ValueError):
+                        errors.append(f"14-unit-economics.json: invalid threshold result for {result.get('metric', 'unknown')}")
+                    if result.get("pass") is False:
+                        warnings.append(f"14-unit-economics.json: failed decision threshold {result.get('metric', 'unknown')}")
+        except (json.JSONDecodeError, AttributeError) as exc:
+            errors.append(f"14-unit-economics.json: invalid JSON structure: {exc}")
+
+    counts = {name: len(rows) for name, rows in tables.items()}
+    counts.update({"claims": len(claims), "sources": len(sources)})
+    if option_path.exists():
+        counts["options"] = option_count
+    if economics_path.exists():
+        counts["unit_economics"] = 1
+    return errors, warnings, counts
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("project", type=Path)
+    parser.add_argument("--json", action="store_true")
+    parser.add_argument("--strict", action="store_true", help="Treat warnings as failure")
+    args = parser.parse_args()
+    errors, warnings, counts = audit(args.project.expanduser().resolve())
+    result = {"errors": errors, "warnings": warnings, "counts": counts, "ready": not errors and (not args.strict or not warnings)}
+    if args.json:
+        print(json.dumps(result, ensure_ascii=False, indent=2))
+    else:
+        for item in warnings:
+            print(f"WARNING: {item}")
+        for item in errors:
+            print(f"ERROR: {item}")
+        print(f"Audit complete: {len(errors)} error(s), {len(warnings)} warning(s), counts={counts}")
+    raise SystemExit(0 if result["ready"] else 1)
+
+
+if __name__ == "__main__":
+    main()

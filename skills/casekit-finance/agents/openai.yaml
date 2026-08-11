@@ -1,0 +1,4 @@
+interface:
+  display_name: "CaseKit Finance"
+  short_description: "Model revenue, unit economics, cash, and scenarios"
+  default_prompt: "Use $casekit-finance to build a revenue-first model with defensible CAC, cohort LTV, payback, recurring-revenue, cash, scenarios, and validation gates."

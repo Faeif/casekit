@@ -1,0 +1,4 @@
+interface:
+  display_name: "CaseKit Operations"
+  short_description: "Turn strategy into an executable operating plan"
+  default_prompt: "Use $casekit-operations to convert the recommendation into an owned, costed, measurable execution roadmap."

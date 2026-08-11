@@ -1,0 +1,4 @@
+interface:
+  display_name: "CaseKit Marketing & Growth"
+  short_description: "Design measurable go-to-market systems"
+  default_prompt: "Use $casekit-marketing-growth to build a measurable launch and growth strategy tied to the financial model."

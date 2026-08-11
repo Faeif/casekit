@@ -1,0 +1,2 @@
+decision_id,date,decision,alternatives,criteria,rationale,evidence_and_assumption_ids,owner,revisit_trigger,status
+DEC-001,2026-08-11,Approve a bounded pilot before full launch,Full launch|Do nothing,learning value|downside|capacity,Pilot tests the highest-sensitivity purchase assumption before irreversible spend,CLM-001|CLM-002|ASM-004|MET-001,Captain,Purchase conversion misses the stop threshold,approved

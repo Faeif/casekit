@@ -1,0 +1,41 @@
+{
+  "currency": "THB",
+  "target_revenue": 500000,
+  "fixed_cost": 120000,
+  "scenarios": {
+    "low": {
+      "eligible_audience": 20000,
+      "reach_rate": 0.20,
+      "response_rate": 0.08,
+      "qualified_rate": 0.55,
+      "purchase_rate": 0.12,
+      "average_order_value": 1800,
+      "purchase_frequency": 1,
+      "variable_cost_per_order": 650,
+      "channel_cost": 80000
+    },
+    "base": {
+      "eligible_audience": 20000,
+      "reach_rate": 0.30,
+      "response_rate": 0.12,
+      "qualified_rate": 0.60,
+      "purchase_rate": 0.18,
+      "average_order_value": 2000,
+      "purchase_frequency": 1,
+      "variable_cost_per_order": 650,
+      "channel_cost": 80000
+    },
+    "high": {
+      "eligible_audience": 20000,
+      "reach_rate": 0.40,
+      "response_rate": 0.16,
+      "qualified_rate": 0.65,
+      "purchase_rate": 0.24,
+      "average_order_value": 2200,
+      "purchase_frequency": 1,
+      "variable_cost_per_order": 650,
+      "channel_cost": 90000
+    }
+  }
+}
+
