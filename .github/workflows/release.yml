@@ -30,7 +30,7 @@ jobs:
               raise SystemExit(f"Tag {tag} must match casekit.json version v{version}")
           PY
       - run: mkdir -p dist && python3 scripts/export_context.py --all --output dist/casekit-context.md
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: casekit-context
           path: dist/casekit-context.md
