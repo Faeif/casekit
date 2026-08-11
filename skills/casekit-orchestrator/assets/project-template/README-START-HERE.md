@@ -2,21 +2,27 @@
 
 Open this folder directly as an Obsidian vault. This workspace is the team's source of truth; use links, comments, and Git history rather than private copies of numbers.
 
-## First 20 minutes
+## Start here — Easy Team Mode
 
-1. Put the official brief, rubric, current deck, spreadsheets, and raw data in `inputs/`.
-2. Complete `00-case-profile.md` and `00-brief.md`.
-3. Map the judging rubric in `11-rubric-scorecard.csv` before dividing work.
-4. Ask an AI: `Use casekit-orchestrator to read this workspace, list missing critical inputs, choose the operating mode, and create an assignment plan.`
-5. Use `casekit-strategy` to fill `option-portfolio.csv` before locking a solution.
-6. Complete `16-vision-growth-plan.md` before writing the vision slide or buying growth activity; distinguish current proof, next milestone, and long-term vision.
-7. List every external dependency in `integration-contract.csv`; mark it Real, Sandbox, Mocked, Planned, or Blocked.
-8. If the team will build code, use `casekit-engineering` to complete `engineering-delivery-plan.md` before implementation.
+You only need to remember three places:
+
+| Put it here | What belongs there | Who edits it |
+|---|---|---|
+| `inputs/` | original brief, rubric, old deck, Excel, raw data | Captain |
+| `00-INBOX/<your-name>/` | your notes, AI drafts, research, calculations, ideas | each teammate, only their own folder |
+| root official files | the team's approved evidence, numbers, decisions, and deck | Integrator only |
+
+1. Captain puts source files in `inputs/` and asks AI: `Use casekit-orchestrator to summarize the brief and create a simple assignment plan. Do not edit official files yet.`
+2. Each person creates one folder, for example `00-INBOX/finance-may/`, and works only there.
+3. When ready, push that draft so the team can see it. Tell the Integrator in chat: “Please review my Finance draft.”
+4. The team discusses it. Only after the team says “use this” does the Integrator copy the relevant conclusion into official ledgers/model/deck.
+
+Read `TEAM-WORKFLOW.md` for the exact copy-paste Git commands.
 
 ## Chat, ideas, and official work
 
 - A chat response or AI-generated Markdown is a draft by default; it does not change the case record automatically.
-- Keep throwaway brainstorming in chat. If an idea deserves team review, add one row to `idea-backlog.csv` with status `exploring` or `proposed`.
+- Keep throwaway brainstorming in chat or your own `00-INBOX/<your-name>/` folder. `idea-backlog.csv` is optional; use it only for ideas the whole team must remember or decide later.
 - Only promote an idea after a human decision: `accepted-for-test` needs an `EXP` ID; `accepted-for-case` needs a `DEC` ID and named affected artifacts.
 - Promotion does not make an idea factual. Add `ASM`, `SRC`, `CLM`, and `MET` records as appropriate, then label assumptions and forecasts honestly.
 - Ask an AI explicitly: `Record this as IDEA-001 for review only; do not update the model, ledgers, or deck.` Or: `Promote IDEA-001 to accepted-for-test and create the required experiment and assumptions.`

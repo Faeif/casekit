@@ -13,7 +13,7 @@ Match the user's working language. Keep IDs, formulas, units, and source metadat
 
 1. Read the challenge brief, official rules, required deliverables, time limit, and judging rubric.
 2. Choose operating mode: `Sprint`, `Standard`, or `Deep` based on time and stakes.
-3. Create a project workspace with `casekit.py init <destination>` when the CLI is available; it installs portable skills and creates an Obsidian-ready workspace. Otherwise copy `assets/project-template/`.
+3. Create a project workspace with `casekit.py init <destination>` when the CLI is available; it installs portable skills and creates an Obsidian-ready workspace. Otherwise copy `assets/project-template/`. Default to **Easy Team Mode**: raw files go in `inputs/`, each teammate drafts only in their own `00-INBOX/<name>/` folder, and one Integrator promotes approved work into official files.
 4. Fill `00-brief.md` before specialist work begins.
 5. Record every external fact in `01-evidence-ledger.csv`, every uncertain input in `02-assumptions.csv`, and every KPI in `03-metric-tree.csv`.
 6. Assign stable IDs. Never silently replace an existing value; update its status and log the decision.
@@ -56,7 +56,7 @@ Do not advance a section when its gate fails:
 
 ## Integration rules
 
-- Keep one source of truth. Specialists may propose changes but must not fork core values.
+- Keep one source of truth. Specialists may propose changes but must not fork core values. In Easy Team Mode, do not require branches: teammates commit only their own `00-INBOX/<name>/` folder to `main`; the Integrator alone changes shared official files.
 - Do not treat AI-generated Markdown as accepted work merely because it was written. It is `exploring` until a human records its status in `idea-backlog.csv` or a reviewer accepts the named artifact.
 - Promote an idea deliberately: `exploring → proposed → accepted-for-test → accepted-for-case`, or record `rejected` / `parked`. An accepted case idea must have a decision ID and named promoted artifacts; an accepted test idea must have an experiment ID.
 - An accepted idea can still be an assumption. Label it as such until evidence validates it; promotion controls workflow, not truth.

@@ -67,7 +67,9 @@ exploring → proposed → accepted-for-test → accepted-for-case
 
 ## Multi-device Git rhythm
 
-Use a private case repository plus the public CaseKit repository. Each teammate installs skills locally, works in a named branch, and submits a small pull request. Keep one Integrator as owner of shared metrics, the deck spec, and final merge. Before merging, run the project validator; after merging, the Integrator reruns it and renders the deck. Reserve ID ranges per workstream to reduce conflicts.
+Start with **Easy Team Mode**. Use one private case repository. Each teammate works only inside `00-INBOX/<their-name>/`, then commits directly to `main`; this avoids conflicts because nobody shares a draft file. One Integrator owns all shared official files and promotes approved work after team discussion. Before any official promotion, the Integrator runs the project validator; after promotion, they validate and render the deck again.
+
+Use a personal branch and pull request only when a teammate must directly edit a shared official file or when the team is comfortable reviewing code-style changes. Never push to another teammate's branch.
 
 ## Suggested sprint allocation
 

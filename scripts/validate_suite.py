@@ -116,6 +116,9 @@ def smoke_tests(errors):
             run([sys.executable, str(orchestrator / "validate_case.py"), str(project)])
             required_start_files = {
                 "README-START-HERE.md",
+                "TEAM-WORKFLOW.md",
+                "00-INBOX/README.md",
+                "inputs/README.md",
                 "00-case-profile.md",
                 "research-backlog.csv",
                 "option-portfolio.csv",
