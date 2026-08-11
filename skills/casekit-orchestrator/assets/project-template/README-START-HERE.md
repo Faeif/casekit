@@ -13,6 +13,14 @@ Open this folder directly as an Obsidian vault. This workspace is the team's sou
 7. List every external dependency in `integration-contract.csv`; mark it Real, Sandbox, Mocked, Planned, or Blocked.
 8. If the team will build code, use `casekit-engineering` to complete `engineering-delivery-plan.md` before implementation.
 
+## Chat, ideas, and official work
+
+- A chat response or AI-generated Markdown is a draft by default; it does not change the case record automatically.
+- Keep throwaway brainstorming in chat. If an idea deserves team review, add one row to `idea-backlog.csv` with status `exploring` or `proposed`.
+- Only promote an idea after a human decision: `accepted-for-test` needs an `EXP` ID; `accepted-for-case` needs a `DEC` ID and named affected artifacts.
+- Promotion does not make an idea factual. Add `ASM`, `SRC`, `CLM`, and `MET` records as appropriate, then label assumptions and forecasts honestly.
+- Ask an AI explicitly: `Record this as IDEA-001 for review only; do not update the model, ledgers, or deck.` Or: `Promote IDEA-001 to accepted-for-test and create the required experiment and assumptions.`
+
 ## Edit numbers safely
 
 - Edit assumptions in `02-assumptions.csv` and metrics in `03-metric-tree.csv`; preserve IDs.

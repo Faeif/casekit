@@ -23,6 +23,7 @@ ID_PATTERNS = {
     "experiment_id": r"EXP-\d{3,}",
     "option_id": r"OPT-\d{3,}",
     "integration_id": r"INT-\d{3,}",
+    "idea_id": r"IDEA-\d{3,}",
 }
 
 FILES = {
@@ -300,6 +301,51 @@ def audit(project):
                     errors.append(f"integration-contract.csv:{line}: unresolved risk reference {risk_id}")
             integration_count = len(integration_rows)
 
+    idea_path = project / "idea-backlog.csv"
+    idea_count = 0
+    if idea_path.exists():
+        idea_fields, idea_rows = read_csv(idea_path)
+        idea_rows = [row for row in idea_rows if not is_blank(row)]
+        required_idea_fields = {
+            "idea_id", "title", "status", "origin", "problem_or_hypothesis", "proposed_mechanism", "owner",
+            "required_evidence_or_test", "experiment_ids", "decision_id", "promoted_artifacts", "next_action", "rationale_or_disposition",
+        }
+        missing_idea_fields = sorted(required_idea_fields - set(idea_fields))
+        if missing_idea_fields:
+            errors.append(f"idea-backlog.csv: missing columns {', '.join(missing_idea_fields)}")
+        else:
+            valid_idea_statuses = {"exploring", "proposed", "accepted-for-test", "accepted-for-case", "rejected", "parked"}
+            idea_ids = set()
+            experiment_ids = {row["experiment_id"].strip() for row in tables.get("experiments", [])}
+            decision_ids = {row["decision_id"].strip() for row in tables.get("decisions", [])}
+            for line, row in enumerate(idea_rows, 2):
+                idea_id = row["idea_id"].strip()
+                if not re.fullmatch(ID_PATTERNS["idea_id"], idea_id):
+                    errors.append(f"idea-backlog.csv:{line}: invalid idea_id '{idea_id}'")
+                if idea_id in idea_ids:
+                    errors.append(f"idea-backlog.csv:{line}: duplicate idea_id {idea_id}")
+                idea_ids.add(idea_id)
+                for field in ("title", "status", "origin", "problem_or_hypothesis", "proposed_mechanism", "owner", "required_evidence_or_test", "next_action"):
+                    if not row[field].strip():
+                        errors.append(f"idea-backlog.csv:{line}: blank required value {field}")
+                status = row["status"].strip().lower()
+                if status not in valid_idea_statuses:
+                    errors.append(f"idea-backlog.csv:{line}: invalid status '{row['status']}'")
+                experiment_refs = split_ids(row["experiment_ids"])
+                if status == "accepted-for-test" and not experiment_refs:
+                    errors.append(f"idea-backlog.csv:{line}: accepted-for-test requires experiment_ids")
+                for ref in experiment_refs:
+                    if ref not in experiment_ids:
+                        errors.append(f"idea-backlog.csv:{line}: unresolved experiment reference {ref}")
+                decision_id = row["decision_id"].strip()
+                if status == "accepted-for-case" and not decision_id:
+                    errors.append(f"idea-backlog.csv:{line}: accepted-for-case requires decision_id")
+                if decision_id and decision_id not in decision_ids:
+                    errors.append(f"idea-backlog.csv:{line}: unresolved decision reference {decision_id}")
+                if status == "accepted-for-case" and not row["promoted_artifacts"].strip():
+                    errors.append(f"idea-backlog.csv:{line}: accepted-for-case requires promoted_artifacts")
+            idea_count = len(idea_rows)
+
     engineering_profile_path = project / "engineering" / "00-engineering-profile.json"
     engineering_level = None
     if engineering_profile_path.exists():
@@ -560,6 +606,8 @@ def audit(project):
         counts["options"] = option_count
     if integration_path.exists():
         counts["integrations"] = integration_count
+    if idea_path.exists():
+        counts["ideas"] = idea_count
     if engineering_level:
         counts["engineering_level"] = engineering_level
     if economics_path.exists():

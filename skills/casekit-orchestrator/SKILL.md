@@ -18,6 +18,7 @@ Match the user's working language. Keep IDs, formulas, units, and source metadat
 5. Record every external fact in `01-evidence-ledger.csv`, every uncertain input in `02-assumptions.csv`, and every KPI in `03-metric-tree.csv`.
 6. Assign stable IDs. Never silently replace an existing value; update its status and log the decision.
 7. Assign work with `10-team-charter.md` and map the official judging criteria in `11-rubric-scorecard.csv` before parallel work starts.
+8. Keep brainstorming separate from the case record: chat-only ideas stay in chat; team-review ideas enter `idea-backlog.csv`; only an explicit promotion may create or change an official claim, assumption, metric, decision, experiment, model, or deck statement.
 
 Read `references/workflow.md` for gates and timing. Read `references/data-contract.md` before integrating specialist outputs. Read `references/integrations.md` before routing work to external skill suites.
 
@@ -56,6 +57,9 @@ Do not advance a section when its gate fails:
 ## Integration rules
 
 - Keep one source of truth. Specialists may propose changes but must not fork core values.
+- Do not treat AI-generated Markdown as accepted work merely because it was written. It is `exploring` until a human records its status in `idea-backlog.csv` or a reviewer accepts the named artifact.
+- Promote an idea deliberately: `exploring → proposed → accepted-for-test → accepted-for-case`, or record `rejected` / `parked`. An accepted case idea must have a decision ID and named promoted artifacts; an accepted test idea must have an experiment ID.
+- An accepted idea can still be an assumption. Label it as such until evidence validates it; promotion controls workflow, not truth.
 - Distinguish `fact`, `benchmark`, `derived estimate`, `team assumption`, and `target`.
 - Use ranges for uncertain inputs. Avoid precision beyond the evidence.
 - Map every recommendation to the judging rubric and quantify the expected effect.

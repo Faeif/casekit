@@ -127,6 +127,7 @@ def smoke_tests(errors):
                 "engineering/architecture.md",
                 "engineering/production-readiness.csv",
                 "16-vision-growth-plan.md",
+                "idea-backlog.csv",
             }
             missing_start_files = sorted(name for name in required_start_files if not (project / name).exists())
             if missing_start_files:
@@ -280,6 +281,20 @@ def smoke_tests(errors):
             missing_real_fields = run_unchecked([sys.executable, str(validator / "audit_case.py"), str(integration_case)])
             if missing_real_fields.returncode == 0 or "real integration requires auth_method" not in missing_real_fields.stdout:
                 fail("Integration contract regression did not reject an unsupported real integration", errors)
+
+            idea_case = temp_path / "idea-case"
+            shutil.copytree(fixture, idea_case)
+            (idea_case / "idea-backlog.csv").write_text(
+                "idea_id,title,status,origin,problem_or_hypothesis,proposed_mechanism,owner,required_evidence_or_test,experiment_ids,decision_id,promoted_artifacts,next_action,rationale_or_disposition\n"
+                "IDEA-001,Test referral,accepted-for-test,Team chat,Referrals may lower CAC,Referral incentive,Growth,Landing-page test,EXP-001,,,Run test,Test before using in deck\n",
+                encoding="utf-8",
+            )
+            run([sys.executable, str(validator / "audit_case.py"), str(idea_case), "--strict"])
+            invalid_idea_text = (idea_case / "idea-backlog.csv").read_text(encoding="utf-8").replace("accepted-for-test", "accepted-for-case")
+            (idea_case / "idea-backlog.csv").write_text(invalid_idea_text, encoding="utf-8")
+            invalid_idea = run_unchecked([sys.executable, str(validator / "audit_case.py"), str(idea_case)])
+            if invalid_idea.returncode == 0 or "accepted-for-case requires decision_id" not in invalid_idea.stdout:
+                fail("Idea-promotion regression did not require an explicit case decision", errors)
 
             broken = temp_path / "broken-case"
             shutil.copytree(fixture, broken)

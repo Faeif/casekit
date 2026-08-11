@@ -32,3 +32,13 @@
 - Who can change the thesis:
 - Escalation rule:
 - Backup owner:
+
+## Collaboration controls
+
+- Case repository URL/private owner:
+- Branch naming convention:
+- Integrator for `03-metric-tree.csv` and `12-deck-spec.json`:
+- ID ranges by workstream:
+- Pull-request reviewer:
+- Chat-to-idea promotion approver:
+- Validator command and merge gate:

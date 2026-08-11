@@ -100,6 +100,12 @@ python3 casekit.py init ../my-competition --brief /path/to/brief.pdf --rubric /p
 
 The resulting workspace contains Markdown notes, CSV ledgers, spreadsheet mapping, and project-scoped skills for Codex, Claude Code, Gemini CLI, and Antigravity. Start at `README-START-HERE.md`. See [OBSIDIAN.md](OBSIDIAN.md) for editable numbers and Excel workflow.
 
+### Team and idea workflow
+
+Use one private repository for each live case; CaseKit itself can remain public. Each teammate creates a named Git branch, works in the shared case workspace, and submits a small pull request. The Integrator owns shared metrics and the deck spec, then runs the validator after every merge.
+
+Chat and AI-generated Markdown are drafts by default. Keep throwaway ideas in chat; use `idea-backlog.csv` only when an idea needs team review. It cannot enter the model or deck until a human promotes it to `accepted-for-test` (with an `EXP` ID) or `accepted-for-case` (with a `DEC` ID and affected artifacts). See `README-START-HERE.md` in a generated workspace for ready-to-use prompts and rules.
+
 ### Manual start
 
 Create a controlled project workspace:

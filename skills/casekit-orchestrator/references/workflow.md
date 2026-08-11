@@ -44,6 +44,31 @@ For six people, use Captain/Integrator, Discovery/Research, Finance, Product/Tec
 
 Each assignment must state deliverable, input IDs, output IDs, acceptance gate, deadline, and handoff recipient. Do not assign vague topics such as “do marketing.”
 
+## Idea promotion and chat boundary
+
+Use three layers so the team can think freely without polluting the final case:
+
+| Layer | Location | Meaning | May appear in deck/model? |
+|---|---|---|---|
+| Chat scratch | AI chat or personal note | rough prompt, alternative, or question; not shared truth | No |
+| Team review | `idea-backlog.csv` | visible proposal with owner and next action | No, unless explicitly labeled as an option/assumption |
+| Official case record | ledgers, decisions, experiments, model, deck spec | accepted work with IDs and a review gate | Yes |
+
+Do not save every chat. Save an idea only when it is worth team attention, needs a test, changes an option, or may otherwise be forgotten. Use an explicit instruction such as: `Create IDEA-003 as exploring only; do not change the model, ledger, or deck.`
+
+Promotion requires a human decision:
+
+```text
+exploring → proposed → accepted-for-test → accepted-for-case
+                    ↘ rejected / parked
+```
+
+`accepted-for-test` requires an `EXP` ID and an explicit pass/stop threshold. `accepted-for-case` requires a `DEC` ID, named affected artifacts, and any resulting `ASM`, `MET`, or `CLM` records. Promotion does not convert an assumption into a fact.
+
+## Multi-device Git rhythm
+
+Use a private case repository plus the public CaseKit repository. Each teammate installs skills locally, works in a named branch, and submits a small pull request. Keep one Integrator as owner of shared metrics, the deck spec, and final merge. Before merging, run the project validator; after merging, the Integrator reruns it and renders the deck. Reserve ID ranges per workstream to reduce conflicts.
+
 ## Suggested sprint allocation
 
 For a 24-hour challenge:
