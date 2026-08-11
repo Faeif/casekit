@@ -1,58 +1,141 @@
-# CaseKit
+<p align="center">
+  <img src="assets/casekit-cover-v2.png" alt="Abstract editorial illustration of CaseKit's evidence-to-decision system" width="100%" />
+</p>
 
-Portable, evidence-led operating system for case competitions and hackathons.
+<h1 align="center">CaseKit</h1>
 
-CaseKit ช่วยให้ทีม Research, Finance, Product/Tech, Marketing, Operations, Pitch, Deck, Validation และ Red Team ทำงานด้วยข้อเท็จจริง สมมติฐาน และตัวเลขชุดเดียวกัน เป้าหมายไม่ใช่การรับประกันชัยชนะ แต่คือเพิ่มคุณภาพของเหตุผล ความน่าเชื่อถือ ความเป็นไปได้ และความพร้อมต่อคำถามกรรมการ
+<p align="center">
+  <a href="https://github.com/Faeif/casekit/actions/workflows/validate.yml"><img src="https://github.com/Faeif/casekit/actions/workflows/validate.yml/badge.svg" alt="Validate CaseKit" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-0B7285.svg" alt="MIT License" /></a>
+  <img src="https://img.shields.io/badge/skills-13-0B7285.svg" alt="13 skills" />
+  <img src="https://img.shields.io/badge/AI-Codex%20%7C%20Claude%20%7C%20Gemini%20%7C%20Antigravity-2864DC.svg" alt="AI portability" />
+</p>
 
-> No number without a formula. No assumption without an ID. No external claim without a source. No recommendation without an owner, KPI, time horizon, and downside case.
+<p align="center"><strong>Turn a competition brief into an evidence-backed, judge-ready case—without losing traceability between research, strategy, financials, product, and the final deck.</strong></p>
 
-## System
+<p align="center">
+  <a href="#start-in-5-minutes">Get started</a> ·
+  <a href="#what-you-get">What you get</a> ·
+  <a href="#team-workflow">Team workflow</a> ·
+  <a href="OBSIDIAN.md">Obsidian guide</a> ·
+  <a href="CONTRIBUTING.md">Contribute</a>
+</p>
+
+> **The CaseKit standard:** no number without a formula; no assumption without an ID; no external claim without a source; no recommendation without an owner, KPI, horizon, and downside case.
+
+## Why CaseKit
+
+Most team failures are integration failures: research is disconnected from the model, the model is disconnected from the strategy, and the deck makes claims nobody can defend. CaseKit gives every workstream a shared operating language—so the team can move quickly *and* answer the judges' next question.
+
+| Instead of | CaseKit creates |
+| --- | --- |
+| scattered links and notes | an evidence ledger with source quality and claim IDs |
+| hand-wavy numbers | a revenue-first model, unit economics, scenarios, and sensitivities |
+| parallel work that does not connect | one shared metric tree, decision log, and risk register |
+| a beautiful but fragile deck | traceable claims, source footers, red-team checks, and rehearsal Q&A |
+
+## Start in 5 minutes
+
+```bash
+git clone https://github.com/Faeif/casekit.git
+cd casekit
+python3 install.py --scope project --project-root /path/to/your-case
+python3 casekit.py init /path/to/your-case --layout clean --team "Alice,Bob,Carol"
+```
+
+Open the newly created case folder in Obsidian (optional), then tell your AI:
+
+```text
+Use casekit-orchestrator to analyze this brief, select the correct operating mode,
+and build a complete judge-ready case workspace.
+```
+
+Restart or refresh your AI client after installation. The same canonical skills work with Codex, Claude Code, Gemini CLI, and Google Antigravity. See [PORTABILITY.md](PORTABILITY.md) if your client is not listed.
+
+## What you get
 
 ```mermaid
 flowchart LR
-    A["Brief & Rubric"] --> B["Discovery & Premises"]
-    B --> C["Research & Evidence"]
-    C --> D["Strategy Choice"]
-    D --> E["Finance & Metrics"]
-    D --> F["Product & Tech"]
-    D --> G["Marketing & Growth"]
-    D --> O["Operations & Scale"]
-    E --> H["Integrated Case"]
-    F --> H
-    G --> H
-    O --> H
-    H --> I["Pitch & Demo"]
-    I --> V["Validator & Deck Render"]
-    V --> J["Red Team & Rehearsal"]
-    J --> K["Submission"]
-    J -. "repair" .-> E
-    J -. "repair" .-> F
-    J -. "repair" .-> G
+    A[Brief & rubric] --> B[Discovery & evidence]
+    B --> C[Strategic choice]
+    C --> D[Finance & metrics]
+    C --> E[Product & tech]
+    C --> F[Marketing & growth]
+    D & E & F --> G[Integrated case]
+    G --> H[Pitch, deck & demo]
+    H --> I[Validate, red-team, submit]
+    I -. repair .-> B
 ```
 
-CaseKit uses stable IDs—`CLM`, `SRC`, `ASM`, `MET`, `PRM`, `DEC`, `RSK`, and `EXP`—so every important slide claim can be traced back to evidence, a formula, or an explicit uncertainty.
+### 13 specialist skills, one integrated case
 
-## Skills
+| Workstream | Skill | Outcome |
+| --- | --- | --- |
+| Integration | `orchestrator` | brief, rubric, shared ledgers, workflow and synthesis |
+| Problem | `discovery` | problem event, stakeholders, premises, opportunity frames |
+| Evidence | `research` | trustworthy sources, customer/market/competitor research |
+| Choice | `strategy` | options, weighted choice, rejected alternatives, confidence |
+| Economics | `finance` | revenue-first model, CAC/LTV, payback, scenarios, sensitivity |
+| Build | `product-tech` + `engineering` | MVP, architecture, tests, delivery and production readiness |
+| Growth | `marketing-growth` | positioning, GTM, funnel, growth loops, experiments |
+| Execution | `operations` | RACI, capacity, roadmap, scale gates |
+| Win the room | `pitch` + `deck` | narrative, slide system, editable PowerPoint, Q&A |
+| Quality | `validator` + `red-team` | audits, rubric attacks, stress tests, repair queue |
+
+<details>
+<summary><strong>Explore all 13 skills</strong></summary>
+
+<br />
 
 | Skill | Owns |
-|---|---|
-| `casekit-orchestrator` | brief, rubric, workflow, shared ledgers, integration |
-| `casekit-discovery` | problem event, stakeholder, premises, opportunity frames, validation gate |
-| `casekit-research` | evidence, market/customer/competitor research, source quality, verification |
-| `casekit-strategy` | options, strategic choice, weighted comparison, rejected alternatives, confidence |
-| `casekit-finance` | revenue-first model, CAC/LTV/payback, MRR/ARR, GRR/NRR, cohort-to-cash plan, AR, budget variance, scenarios, sensitivity |
-| `casekit-product-tech` | MVP, architecture, feasibility, risk controls, demo |
-| `casekit-engineering` | implementation, contracts, code quality, tests, CI, release, operations |
-| `casekit-marketing-growth` | positioning, CEO vision/proof portfolio, GTM, growth loops, launch/event, funnel ownership, experiments |
-| `casekit-operations` | operating model, RACI, capacity, roadmap, governance, scale gates |
-| `casekit-pitch` | narrative, slide storyboard, scripts, demo choreography, Q&A |
-| `casekit-validator` | source, reference, financial, strategic, deck, rubric, submission audits |
-| `casekit-deck` | canonical deck spec, editable PowerPoint, source footers, visual QA |
-| `casekit-red-team` | rubric attack, contradiction checks, stress tests, repair queue |
+| --- | --- |
+| `casekit-orchestrator` | brief, rubric, workflow, shared ledgers, and integration |
+| `casekit-discovery` | problem event, stakeholders, premises, opportunity frames, and validation gates |
+| `casekit-research` | evidence, market/customer/competitor research, source quality, and verification |
+| `casekit-strategy` | options, strategic choice, weighted comparison, rejected alternatives, and confidence |
+| `casekit-finance` | revenue-first model, CAC/LTV/payback, recurring revenue, cohort-to-cash, AR, scenarios, and sensitivity |
+| `casekit-product-tech` | MVP, architecture, feasibility, risk controls, and demo |
+| `casekit-engineering` | implementation, contracts, code quality, tests, CI, release, and operations |
+| `casekit-marketing-growth` | positioning, vision, GTM, growth loops, launch/event, funnel ownership, and experiments |
+| `casekit-operations` | operating model, RACI, capacity, roadmap, governance, and scale gates |
+| `casekit-pitch` | narrative, slide storyboard, scripts, demo choreography, and Q&A |
+| `casekit-deck` | canonical deck spec, editable PowerPoint, source footers, and visual QA |
+| `casekit-validator` | source, financial, strategic, deck, rubric, and submission audits |
+| `casekit-red-team` | rubric attacks, contradiction checks, stress tests, and repair queue |
 
-## Install
+</details>
 
-CaseKit follows the open Agent Skills format. One command installs the same canonical skills for Codex, Claude Code, Gemini CLI, and Google Antigravity at user scope:
+### The evidence chain
+
+CaseKit uses stable IDs—`CLM`, `SRC`, `ASM`, `MET`, `PRM`, `DEC`, `RSK`, and `EXP`—to make material claims auditable from slide back to source, formula, and uncertainty.
+
+```text
+Claim (CLM) → Source (SRC) / Assumption (ASM) → Metric (MET) → Decision (DEC) → Slide
+```
+
+## Team workflow
+
+For a live competition, create **one private repository per case**. Keep CaseKit as the reusable public toolkit.
+
+1. One teammate creates the workspace with `--layout clean` and shares the case repo.
+2. Put original brief, rubric, and raw materials in `01-INPUTS/`.
+3. Each teammate works in only their own folder in `02-TEAM/`.
+4. An Integrator promotes approved work into `03-OFFICIAL/` and the final deck.
+5. Run validation before every PR, rehearsal, and submission.
+
+This keeps exploration safe: chat output and unconfirmed ideas stay in personal drafts; only a decision or test turns an idea into an official artifact. Generated workspaces include `README-START-HERE.md` and `TEAM-WORKFLOW.md` with the exact workflow.
+
+## Choose your mode
+
+| Mode | Use when | Focus |
+| --- | --- | --- |
+| **Sprint** | hours, not days | highest-risk unknowns and a defendable minimum case |
+| **Standard** | most competitions | full synthesis, validation, and rehearsal |
+| **Deep** | final round or high stakes | triangulation, stakeholder validation, and stress testing |
+
+## Installation and runtime
+
+CaseKit follows the open Agent Skills format. Install it for all supported clients at user scope:
 
 ```bash
 python3 install.py
@@ -84,11 +167,7 @@ For editable PowerPoint rendering, PDF intake, and Excel/CSV sync, install the r
 python3 -m pip install -r requirements.txt
 ```
 
-## Start a competition
-
-### Obsidian-first quick start
-
-Install the local runtime, create a workspace, and open that new folder as an Obsidian vault:
+To use editable PowerPoint rendering, PDF intake, and Excel/CSV sync, install the optional runtime dependencies once. For a complete Obsidian-first setup, run:
 
 ```bash
 python3 -m venv .venv
@@ -98,42 +177,9 @@ python3 casekit.py doctor --strict
 python3 casekit.py init ../my-competition --brief /path/to/brief.pdf --rubric /path/to/rubric.pdf
 ```
 
-The resulting workspace contains Markdown notes, CSV ledgers, spreadsheet mapping, and project-scoped skills for Codex, Claude Code, Gemini CLI, and Antigravity. Start at `README-START-HERE.md`. See [OBSIDIAN.md](OBSIDIAN.md) for editable numbers and Excel workflow.
+The generated workspace contains Markdown notes, CSV ledgers, spreadsheet mapping, and project-scoped skills. Start at `README-START-HERE.md`. See [OBSIDIAN.md](OBSIDIAN.md) for the editable-number and Excel workflow.
 
-### Optional clean team workspace
-
-CaseKit is primarily a skill library; use a workspace structure only when shared files, sources, numbers, and deck decisions need governance. Keep the default `legacy` layout for a solo/sprint case. For a team workspace with separate inputs, personal drafts, and approved artifacts, choose `clean` explicitly:
-
-```bash
-python3 casekit.py init ../my-team-case --layout clean --team "Alice,Bob,Carol"
-python3 casekit.py status ../my-team-case
-```
-
-This creates generic `01-INPUTS/`, `02-TEAM/`, and `03-OFFICIAL/` folders. Names are optional and never built into CaseKit itself.
-
-### Team and idea workflow
-
-Use one private repository for each live case; CaseKit itself can remain public. The default is **Easy Team Mode**: source files go in `inputs/`, each teammate works only in `00-INBOX/<their-name>/`, and the Integrator alone updates shared official files, metrics, and the deck. Teammates can safely commit their own draft folder directly to `main`; after a team decision, everyone pulls the Integrator's official update. `TEAM-WORKFLOW.md` in every new workspace contains the copy-paste setup commands.
-
-For a cleaner team-facing layout, CaseKit commands also support `01-INPUTS/`, `02-TEAM/`, and `03-OFFICIAL/`. This is useful when the team wants all approved records in one visible folder while keeping the same validation and rendering controls.
-
-Chat and AI-generated Markdown are drafts by default. Keep throwaway ideas in chat or a personal INBOX folder; use `idea-backlog.csv` only when an idea needs team review. It cannot enter the model or deck until a human promotes it to `accepted-for-test` (with an `EXP` ID) or `accepted-for-case` (with a `DEC` ID and affected artifacts). See `README-START-HERE.md` in a generated workspace for ready-to-use prompts and rules.
-
-### Manual start
-
-Create a controlled project workspace:
-
-```bash
-python3 skills/casekit-orchestrator/scripts/new_case.py ./my-competition
-```
-
-Then invoke with provider-neutral language:
-
-```text
-Use casekit-orchestrator to analyze this brief, select the correct operating mode, and build a complete judge-ready case workspace.
-```
-
-Specialist example:
+### Useful specialist prompt
 
 ```text
 Use casekit-finance to estimate launch revenue, required reach, conversion, activity throughput, cost, break-even, scenarios, sensitivity, and kill criteria. Defend every material assumption.
@@ -161,12 +207,6 @@ Validate and render after the ledgers and deck spec are populated:
 python3 skills/casekit-validator/scripts/audit_case.py ./my-competition
 python3 skills/casekit-deck/scripts/render_deck.py ./my-competition/12-deck-spec.json ./my-competition/submission.pptx
 ```
-
-## Operating modes
-
-- `Sprint` — compressed workflow for short deadlines; focus on highest-risk unknowns.
-- `Standard` — default competition workflow with synthesis and verification.
-- `Deep` — final-round or regulated/high-stakes workflow with deeper triangulation and validation.
 
 ## Optional integrations
 
