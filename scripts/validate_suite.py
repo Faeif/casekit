@@ -151,6 +151,20 @@ def smoke_tests(errors):
             for skill_name in ("casekit-strategy", "casekit-engineering"):
                 if not (cli_project / ".agents" / "skills" / skill_name / "SKILL.md").exists():
                     fail(f"Clone-to-case CLI did not install {skill_name}", errors)
+            clean_cli_project = temp_path / "clean-cli-case"
+            run([sys.executable, str(casekit_cli), "init", str(clean_cli_project), "--layout", "clean", "--team", "Alice,Bob"])
+            clean_required = {
+                "01-INPUTS/README.md", "02-TEAM/Alice/01-RESEARCH/.gitkeep", "02-TEAM/Bob/03-READY/.gitkeep",
+                "03-OFFICIAL/00-case-profile.md", "03-OFFICIAL/12-deck-spec.json", "00-START-HERE.md", "AGENTS.md",
+            }
+            missing_clean = sorted(name for name in clean_required if not (clean_cli_project / name).exists())
+            if missing_clean:
+                fail(f"Clean team layout is missing: {missing_clean}", errors)
+            if (clean_cli_project / "00-case-profile.md").exists() or (clean_cli_project / "inputs").exists():
+                fail("Clean team layout retained legacy root artifacts", errors)
+            clean_status = run([sys.executable, str(casekit_cli), "status", str(clean_cli_project)])
+            if "Layout: clean team" not in clean_status.stdout or "Next: add the official brief" not in clean_status.stdout:
+                fail("Workspace status did not report the expected clean-layout onboarding step", errors)
             install_target = temp_path / "installed"
             run(
                 [

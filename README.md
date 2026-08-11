@@ -100,6 +100,17 @@ python3 casekit.py init ../my-competition --brief /path/to/brief.pdf --rubric /p
 
 The resulting workspace contains Markdown notes, CSV ledgers, spreadsheet mapping, and project-scoped skills for Codex, Claude Code, Gemini CLI, and Antigravity. Start at `README-START-HERE.md`. See [OBSIDIAN.md](OBSIDIAN.md) for editable numbers and Excel workflow.
 
+### Optional clean team workspace
+
+CaseKit is primarily a skill library; use a workspace structure only when shared files, sources, numbers, and deck decisions need governance. Keep the default `legacy` layout for a solo/sprint case. For a team workspace with separate inputs, personal drafts, and approved artifacts, choose `clean` explicitly:
+
+```bash
+python3 casekit.py init ../my-team-case --layout clean --team "Alice,Bob,Carol"
+python3 casekit.py status ../my-team-case
+```
+
+This creates generic `01-INPUTS/`, `02-TEAM/`, and `03-OFFICIAL/` folders. Names are optional and never built into CaseKit itself.
+
 ### Team and idea workflow
 
 Use one private repository for each live case; CaseKit itself can remain public. The default is **Easy Team Mode**: source files go in `inputs/`, each teammate works only in `00-INBOX/<their-name>/`, and the Integrator alone updates shared official files, metrics, and the deck. Teammates can safely commit their own draft folder directly to `main`; after a team decision, everyone pulls the Integrator's official update. `TEAM-WORKFLOW.md` in every new workspace contains the copy-paste setup commands.
