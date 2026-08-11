@@ -126,6 +126,7 @@ def smoke_tests(errors):
                 "engineering/00-engineering-profile.json",
                 "engineering/architecture.md",
                 "engineering/production-readiness.csv",
+                "16-vision-growth-plan.md",
             }
             missing_start_files = sorted(name for name in required_start_files if not (project / name).exists())
             if missing_start_files:

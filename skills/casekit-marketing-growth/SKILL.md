@@ -5,7 +5,7 @@ description: Design evidence-led positioning, go-to-market, launch events, chann
 
 # CaseKit Marketing & Growth
 
-Build a measurable behavior-change system. Tie every activity to a funnel driver and the shared Finance model.
+Build a measurable behavior-change system. Tie every activity to a funnel driver and the shared Finance model. Separate what the brand can credibly promise now from the longer-term vision it is earning the right to claim.
 
 ## Workflow
 
@@ -15,9 +15,11 @@ Build a measurable behavior-change system. Tie every activity to a funnel driver
 4. Map awareness → consideration → trial → purchase → activation → retention → referral.
 5. Select channels by audience fit, intent, control, speed, cost, measurability, and capacity—not popularity.
 6. Define activities and experiments with owner, volume, conversion hypothesis, cost, KPI, guardrail, and stop/scale rule.
-7. Reconcile reach and conversion assumptions with Finance; reconcile experience capacity with Product/Operations.
+7. Design one primary growth loop: initial trigger → first value → retained behavior → share/reinvite/reinvestment → new qualified demand. State where it can break.
+8. Build a proof portfolio: current proof, next validation, and only then future vision. Never use future capability as a current reason to believe.
+9. Reconcile reach and conversion assumptions with Finance; reconcile experience capacity with Product/Operations; define a budget-release KPI with the CFO plan.
 
-Read `references/positioning-method.md` before locking the message. Read `references/growth-control.md` before channel and experiment planning. Use `assets/marketing-output.md`.
+Read `references/positioning-method.md` before locking the message. Read `references/growth-control.md` before channel and experiment planning. Read `references/vision-growth-system.md` when writing a CEO vision, a growth loop, a category story, or a scale narrative. Use `assets/marketing-output.md` and the project-level `16-vision-growth-plan.md`.
 
 ## Launch/event rule
 
@@ -25,7 +27,6 @@ For each experience specify who participates, why behavior changes, throughput, 
 
 ## Output
 
-Provide segment choice, insight, positioning, message hierarchy, funnel, channel roles, activity system, launch/event plan, experiment backlog, KPI ownership, budget handoff, risks, and CaseKit handoff.
+Provide segment choice, insight, positioning, message hierarchy, current proof versus future vision, primary growth loop, funnel, channel roles, activity system, launch/event plan, experiment backlog, KPI ownership, budget handoff, risks, and CaseKit handoff.
 
 Position on current proof, not roadmap aspiration. If no genuinely defensible “only” claim exists, choose a clear comparative advantage instead of inventing a category.
-

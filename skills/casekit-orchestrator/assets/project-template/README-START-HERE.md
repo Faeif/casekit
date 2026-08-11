@@ -9,8 +9,9 @@ Open this folder directly as an Obsidian vault. This workspace is the team's sou
 3. Map the judging rubric in `11-rubric-scorecard.csv` before dividing work.
 4. Ask an AI: `Use casekit-orchestrator to read this workspace, list missing critical inputs, choose the operating mode, and create an assignment plan.`
 5. Use `casekit-strategy` to fill `option-portfolio.csv` before locking a solution.
-6. List every external dependency in `integration-contract.csv`; mark it Real, Sandbox, Mocked, Planned, or Blocked.
-7. If the team will build code, use `casekit-engineering` to complete `engineering-delivery-plan.md` before implementation.
+6. Complete `16-vision-growth-plan.md` before writing the vision slide or buying growth activity; distinguish current proof, next milestone, and long-term vision.
+7. List every external dependency in `integration-contract.csv`; mark it Real, Sandbox, Mocked, Planned, or Blocked.
+8. If the team will build code, use `casekit-engineering` to complete `engineering-delivery-plan.md` before implementation.
 
 ## Edit numbers safely
 
