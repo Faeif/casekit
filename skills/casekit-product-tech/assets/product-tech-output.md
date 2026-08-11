@@ -23,6 +23,12 @@
 | Component/data | Responsibility/source | Build/buy | Dependency | Cost driver | Risk/control |
 |---|---|---|---|---|---|
 
+## External integrations
+Use `integration-contract.csv` as the source of truth. On this page list only the integrations that affect the core user journey.
+
+| System | Purpose | Status: Real / Sandbox / Mocked / Planned / Blocked | Fallback | Owner |
+|---|---|---|---|---|
+
 ## Architecture decisions
 | Decision ID | Context/options | Choice and trade-off | Revisit trigger | Owner |
 |---|---|---|---|---|

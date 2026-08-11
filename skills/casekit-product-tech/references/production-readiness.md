@@ -20,6 +20,10 @@ For each consequential choice record: context, options, chosen option, trade-off
 | Delivery | environments, CI checks, migration/backward compatibility, staged rollout, kill switch, rollback owner |
 | Economics | cost per active user/request, cloud/provider limit, staffing and support capacity, downside scenario |
 
+## External integration gate
+
+Create one `integration-contract.csv` row per external system. Mark an integration `real` only when credentials/access, an accountable owner, an agreed data boundary, and a tested path exist. A signed partnership is not automatically a technical integration. For `planned` or `blocked` integrations, show the manual, deep-link, export, or simulated fallback that preserves the core user journey.
+
 ## Architecture baseline
 
 Use a thin vertical slice with explicit boundaries:

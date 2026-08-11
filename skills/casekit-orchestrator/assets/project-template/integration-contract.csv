@@ -1,0 +1,1 @@
+integration_id,system,purpose,user_journey_step,delivery_level,status,interface_type,auth_method,data_in,data_out,personal_data_classification,consent_or_legal_basis,owner,partner_owner,dependency,rate_limit_or_sla,cost_driver,fallback,demo_evidence,source_or_assumption_ids,risk_id,go_live_gate

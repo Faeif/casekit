@@ -22,6 +22,7 @@ ID_PATTERNS = {
     "premise_id": r"PRM-\d{3,}",
     "experiment_id": r"EXP-\d{3,}",
     "option_id": r"OPT-\d{3,}",
+    "integration_id": r"INT-\d{3,}",
 }
 
 FILES = {
@@ -254,6 +255,50 @@ def audit(project):
                 errors.append("option-portfolio.csv: exactly one nonblank option must have status 'chosen'")
             option_count = len(option_rows)
 
+    integration_path = project / "integration-contract.csv"
+    integration_count = 0
+    if integration_path.exists():
+        integration_fields, integration_rows = read_csv(integration_path)
+        integration_rows = [row for row in integration_rows if not is_blank(row)]
+        required_integration_fields = {
+            "integration_id", "system", "purpose", "user_journey_step", "delivery_level", "status",
+            "interface_type", "data_in", "data_out", "owner", "dependency", "fallback",
+            "demo_evidence", "source_or_assumption_ids", "risk_id", "go_live_gate",
+        }
+        missing_integration_fields = sorted(required_integration_fields - set(integration_fields))
+        if missing_integration_fields:
+            errors.append(f"integration-contract.csv: missing columns {', '.join(missing_integration_fields)}")
+        else:
+            integration_ids = set()
+            valid_statuses = {"real", "sandbox", "mocked", "planned", "blocked", "deprecated"}
+            valid_levels = {"concept", "prototype", "pilot", "production"}
+            for line, row in enumerate(integration_rows, 2):
+                integration_id = row["integration_id"].strip()
+                if not re.fullmatch(ID_PATTERNS["integration_id"], integration_id):
+                    errors.append(f"integration-contract.csv:{line}: invalid integration_id '{integration_id}'")
+                if integration_id in integration_ids:
+                    errors.append(f"integration-contract.csv:{line}: duplicate integration_id {integration_id}")
+                integration_ids.add(integration_id)
+                for field in ("system", "purpose", "user_journey_step", "interface_type", "data_in", "data_out", "owner", "dependency", "fallback", "demo_evidence", "go_live_gate"):
+                    if not row[field].strip():
+                        errors.append(f"integration-contract.csv:{line}: blank required value {field}")
+                status = row["status"].strip().lower()
+                if status not in valid_statuses:
+                    errors.append(f"integration-contract.csv:{line}: invalid status '{row['status']}'")
+                if row["delivery_level"].strip().lower() not in valid_levels:
+                    errors.append(f"integration-contract.csv:{line}: invalid delivery_level '{row['delivery_level']}'")
+                if status == "real":
+                    for field in ("auth_method", "partner_owner", "consent_or_legal_basis", "rate_limit_or_sla", "cost_driver"):
+                        if field in integration_fields and not row[field].strip():
+                            errors.append(f"integration-contract.csv:{line}: real integration requires {field}")
+                for ref in split_ids(row["source_or_assumption_ids"]):
+                    if ref not in sources | assumption_ids | metric_ids:
+                        errors.append(f"integration-contract.csv:{line}: unresolved source or assumption reference {ref}")
+                risk_id = row["risk_id"].strip()
+                if risk_id not in {row["risk_id"].strip() for row in tables.get("risks", [])}:
+                    errors.append(f"integration-contract.csv:{line}: unresolved risk reference {risk_id}")
+            integration_count = len(integration_rows)
+
     deck_path = project / "12-deck-spec.json"
     if deck_path.exists():
         try:
@@ -391,6 +436,8 @@ def audit(project):
     counts.update({"claims": len(claims), "sources": len(sources)})
     if option_path.exists():
         counts["options"] = option_count
+    if integration_path.exists():
+        counts["integrations"] = integration_count
     if economics_path.exists():
         counts["unit_economics"] = 1
     return errors, warnings, counts

@@ -8,6 +8,7 @@ CaseKit works as a normal Obsidian vault. Markdown notes hold the brief, decisio
 2. Open `my-case` in Obsidian with **Open folder as vault**.
 3. Keep the CaseKit repository and each competition workspace in Git separately. Do not initialise a Git repository in a parent folder that also contains unrelated personal files.
 4. Use Obsidian to edit Markdown and CSV. Keep spreadsheets under `inputs/` and map only presentation-ready values into the metric tree.
+5. Track every API, partner, CRM, payment, identity, or external-data dependency in `integration-contract.csv`. `Mocked` is acceptable for a demo when labelled honestly.
 
 ## Updating a number
 

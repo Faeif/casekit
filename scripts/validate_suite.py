@@ -121,6 +121,7 @@ def smoke_tests(errors):
                 "option-portfolio.csv",
                 "qna-bank.csv",
                 "data-import-map.json",
+                "integration-contract.csv",
             }
             missing_start_files = sorted(name for name in required_start_files if not (project / name).exists())
             if missing_start_files:
@@ -247,6 +248,21 @@ def smoke_tests(errors):
             duplicate_option = run_unchecked([sys.executable, str(validator / "audit_case.py"), str(strategy_case)])
             if duplicate_option.returncode == 0 or "duplicate option_id OPT-001" not in duplicate_option.stdout:
                 fail("Strategy option regression did not reject duplicate option IDs", errors)
+
+            integration_case = temp_path / "integration-case"
+            shutil.copytree(fixture, integration_case)
+            (integration_case / "integration-contract.csv").write_text(
+                "integration_id,system,purpose,user_journey_step,delivery_level,status,interface_type,auth_method,data_in,data_out,personal_data_classification,consent_or_legal_basis,owner,partner_owner,dependency,rate_limit_or_sla,cost_driver,fallback,demo_evidence,source_or_assumption_ids,risk_id,go_live_gate\n"
+                "INT-001,Messaging partner,Send action alert,Notify caregiver,pilot,mocked,Webhook,N/A,Alert payload,Delivery status,low,N/A,Product,Partner pending,Mock service,N/A,ASM-005,Manual call,Screen recording,ASM-005,RSK-001,Partner approval\n",
+                encoding="utf-8",
+            )
+            run([sys.executable, str(validator / "audit_case.py"), str(integration_case), "--strict"])
+            real_text = (integration_case / "integration-contract.csv").read_text(encoding="utf-8").replace(",pilot,mocked,", ",production,real,")
+            real_text = real_text.replace(",N/A,Alert payload", ",,Alert payload")
+            (integration_case / "integration-contract.csv").write_text(real_text, encoding="utf-8")
+            missing_real_fields = run_unchecked([sys.executable, str(validator / "audit_case.py"), str(integration_case)])
+            if missing_real_fields.returncode == 0 or "real integration requires auth_method" not in missing_real_fields.stdout:
+                fail("Integration contract regression did not reject an unsupported real integration", errors)
 
             broken = temp_path / "broken-case"
             shutil.copytree(fixture, broken)

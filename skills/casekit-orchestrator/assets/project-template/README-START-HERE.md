@@ -9,6 +9,7 @@ Open this folder directly as an Obsidian vault. This workspace is the team's sou
 3. Map the judging rubric in `11-rubric-scorecard.csv` before dividing work.
 4. Ask an AI: `Use casekit-orchestrator to read this workspace, list missing critical inputs, choose the operating mode, and create an assignment plan.`
 5. Use `casekit-strategy` to fill `option-portfolio.csv` before locking a solution.
+6. List every external dependency in `integration-contract.csv`; mark it Real, Sandbox, Mocked, Planned, or Blocked.
 
 ## Edit numbers safely
 
@@ -17,6 +18,7 @@ Open this folder directly as an Obsidian vault. This workspace is the team's sou
 - For Excel, put the workbook in `inputs/`, run the cloned CaseKit CLI with `python3 /path/to/casekit/casekit.py inspect-spreadsheet`, then map selected cells in `data-import-map.json`.
 - Run `python3 /path/to/casekit/casekit.py sync-spreadsheet . data-import-map.json --apply` after changing the workbook, then run `python3 /path/to/casekit/casekit.py validate . --strict` before deck freeze.
 - Do not edit a deck number directly when it has a `metric_binding`; update its metric, re-render, and validate.
+- Never present a partner integration as real unless the integration contract has an owner, approved data boundary, and tested path.
 
 ## Obsidian conventions
 

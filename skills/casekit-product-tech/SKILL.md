@@ -32,12 +32,13 @@ Do not upgrade a level merely because it has an architecture diagram. State the 
 8. Design a demo that proves the core mechanism with a reliable backup.
 9. Reconcile capacity and cost assumptions with Finance and acquisition/usage assumptions with Marketing.
 
-Read `references/feasibility-gates.md`. For `Pilot` or `Production`, read `references/production-readiness.md`. Read `references/gstack-handoff.md` when a team has gstack installed or needs a coded prototype reviewed. Use `assets/product-tech-output.md`.
+Read `references/feasibility-gates.md`. For every external system, fill `integration-contract.csv`; label it `real`, `sandbox`, `mocked`, `planned`, or `blocked`. For `Pilot` or `Production`, read `references/production-readiness.md`. Read `references/gstack-handoff.md` when a team has gstack installed or needs a coded prototype reviewed. Use `assets/product-tech-output.md`.
 
 ## MVP rules
 
 - Include a feature only if it proves desirability, feasibility, viability, differentiation, or a mandatory rubric item.
 - Distinguish working functionality, mocked functionality, conceptual roadmap, and external dependency.
+- Never claim access to a partner API, CRM, billing system, identity provider, health record, or internal data set without a named owner and approved status in the integration contract.
 - Never imply production readiness from a prototype.
 - For AI, state model/provider, inputs, outputs, evaluation, latency, unit cost, data handling, failure behavior, and human escalation.
 - For AI in `Pilot` or `Production`, version prompts/models, test representative and adversarial cases, monitor quality drift, minimize retained data, and provide a deterministic fallback for high-risk paths.
