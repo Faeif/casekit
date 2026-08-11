@@ -1,5 +1,10 @@
 # Product and technical case
 
+## Delivery level
+- Concept / Prototype / Pilot / Production:
+- Why this level matches the competition decision:
+- Explicitly deferred controls:
+
 ## Strategic mechanism
 - User/job:
 - Current alternative:
@@ -17,6 +22,20 @@
 ## Architecture and data
 | Component/data | Responsibility/source | Build/buy | Dependency | Cost driver | Risk/control |
 |---|---|---|---|---|---|
+
+## Architecture decisions
+| Decision ID | Context/options | Choice and trade-off | Revisit trigger | Owner |
+|---|---|---|---|---|
+
+## Pilot / production readiness
+| Area | Requirement/target | Measurement | Failure response | Owner | Evidence/assumption ID |
+|---|---|---|---|---|---|
+| Reliability | | | | | |
+| Security/privacy | | | | | |
+| AI quality | | | | | |
+| Testing | | | | | |
+| Observability | | | | | |
+| Rollout/rollback | | | | | |
 
 ## Delivery plan
 | Milestone | Output | Owner | Effort | Dependency | Acceptance test |
@@ -38,4 +57,3 @@
 - Contradictions found:
 - Highest-sensitivity unknown:
 - Next validation action:
-
