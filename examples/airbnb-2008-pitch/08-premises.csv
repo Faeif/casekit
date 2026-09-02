@@ -1,0 +1,3 @@
+premise_id,premise,type,evidence_ids,confidence,decision_impact,falsification_test,owner,status
+PRM-001,"Homeowners will allow vetted travelers to sleep in their spare rooms for $80/night",desirability,CLM-001|CLM-002,high,critical,"Denver DNC 100-host sign-up conversion pilot",Product,validated
+PRM-002,"Guests prefer paying $80/night for local accommodation over $250/night hotel surge pricing",viability,CLM-003,high,critical,"Booking conversion rate above 2.5% during event periods",Growth,validated

@@ -1,0 +1,127 @@
+{
+  "meta": {
+    "title": "Stripe — Developer Wedge 2010",
+    "subtitle": "Payments infrastructure for the internet",
+    "team": "Patrick Collison, John Collison",
+    "language": "en-US",
+    "currency": "USD",
+    "font_head": "Arial",
+    "font_body": "Arial",
+    "aspect_ratio": "16:9"
+  },
+  "slides": [
+    {
+      "type": "cover",
+      "headline": "Stripe: Payments infrastructure for the internet",
+      "subhead": "Accept credit card payments online in 5 minutes with 7 lines of code",
+      "speaker_notes": "Good morning. We are Stripe. We build payments infrastructure for the internet, enabling developers to accept credit cards in minutes with 7 lines of code."
+    },
+    {
+      "type": "split_content",
+      "headline": "Legacy merchant processors require 6-8 weeks of paperwork; Stripe takes 7 lines of code",
+      "left": {
+        "title": "Legacy Processing (Authorize.Net / Wells)",
+        "body": [
+          "6 to 8 weeks of manual underwriting and faxed paperwork",
+          "$500 setup fees plus $30 monthly gateway maintenance charges",
+          "Merchant servers hold raw card numbers, incurring complex PCI audits",
+          "65% of developer projects are abandoned before completion"
+        ]
+      },
+      "right": {
+        "title": "Stripe Developer Wedge",
+        "body": [
+          "Instant 5-minute activation with automated programmatic underwriting",
+          "Zero setup fees, zero monthly maintenance fees (flat 2.9% + 30¢)",
+          "Client-side tokenization eliminates server PCI liability entirely",
+          "7 lines of JavaScript code to accept global credit cards"
+        ]
+      },
+      "evidence_ids": ["CLM-001", "CLM-002", "CLM-003"],
+      "speaker_notes": "Legacy payment processors take 6 to 8 weeks and charge heavy setup fees. Stripe reduces this to 7 lines of code and 5 minutes."
+    },
+    {
+      "type": "metric",
+      "headline": "Instant 5-minute developer onboarding with zero setup fees or monthly maintenance",
+      "metric": "5 Minutes",
+      "label": "Time to First Live Transaction",
+      "comparison": "vs 6–8 weeks for legacy merchant accounts",
+      "body": [
+        "Sign up online, copy API key, and paste 7 lines of JavaScript",
+        "Transparent flat pricing: 2.9% + 30¢ on successful charges only",
+        "Direct deposit into merchant bank accounts on a rolling 7-day schedule"
+      ],
+      "metric_bindings": [{"metric_id": "MET-006", "scenario": "base", "value": 5}],
+      "evidence_ids": ["MET-006", "ASM-003", "CLM-001"],
+      "speaker_notes": "A developer can create an account and accept their first live charge in under 5 minutes without talking to a salesperson or signing a contract."
+    },
+    {
+      "type": "card_grid",
+      "headline": "Why developers love Stripe: 7 lines of code, instant activation, and zero PCI liability",
+      "cards": [
+        {
+          "title": "7 Lines of Code",
+          "body": ["Simple REST API and clean client JS", "World-class interactive documentation", "Works with Ruby, Python, PHP, and Node"]
+        },
+        {
+          "title": "Programmatic Underwriting",
+          "body": ["Zero faxed paperwork or phone calls", "Instant merchant credential issuance", "Real-time automated fraud scoring"]
+        },
+        {
+          "title": "Zero PCI Scope",
+          "body": ["Stripe.js tokenizes cards in the browser", "Card data never touches merchant servers", "Reduces PCI compliance to SAQ A"]
+        }
+      ],
+      "evidence_ids": ["DEC-001", "DEC-002", "CLM-002"],
+      "speaker_notes": "Three core features drive developer love: 7 lines of code, instant programmatic underwriting, and zero PCI compliance overhead."
+    },
+    {
+      "type": "funnel",
+      "headline": "$175B US online commerce creates a massive $4.8B developer wedge and $24M net revenue opportunity",
+      "stages": [
+        {"label": "$175B US E-Commerce GPV (TAM)", "value": 175000000000, "metric_id": "MET-001", "scenario": "base"},
+        {"label": "$4.8B Developer Wedge GPV (SAM)", "value": 4800000000, "metric_id": "MET-002", "scenario": "base"},
+        {"label": "$24M Net Revenue Run-Rate (SOM)", "value": 24000000, "metric_id": "MET-003", "scenario": "base"}
+      ],
+      "evidence_ids": ["CLM-004", "CLM-005", "MET-001", "MET-002", "MET-003"],
+      "speaker_notes": "The US e-commerce market is $175 billion. Capturing a $4.8 billion developer wedge generates $24 million in net revenue at a 0.5% net margin spread."
+    },
+    {
+      "type": "timeline",
+      "headline": "Developer-first distribution flywheel powers explosive organic growth",
+      "phases": [
+        {"label": "YC Cohort Wedge", "items": ["Onboard 100% of YC startups", "Direct developer feedback in IRC/Hacker News", "Word-of-mouth technical advocacy"], "gate": "100 active transacting companies"},
+        {"label": "Developer Ecosystem", "items": ["Open-source libraries for all web stacks", "Plugin integrations (Shopify, WordPress)", "Self-serve developer dashboard"], "gate": "$50M annual processing volume"},
+        {"label": "Enterprise Expansion", "items": ["Multi-currency global support", "Recurring subscription billing engine", "Marketplace split payments API"], "gate": "$4.8B developer processing volume"}
+      ],
+      "evidence_ids": ["DEC-001", "DEC-003", "EXP-001"],
+      "speaker_notes": "Our distribution flywheel starts with YC startups and developers, compounding through open-source libraries and developer community word of mouth."
+    },
+    {
+      "type": "metric",
+      "headline": "A 0.5% net margin spread on $4.8B in developer processing volume produces $24M in net revenue",
+      "metric": "$24.0M",
+      "label": "Annual Net Revenue (SOM)",
+      "comparison": "100,000 active developers × $48,000 annual volume × 0.5% spread",
+      "body": [
+        "Gross fee: 2.9% + 30¢ charged per transaction",
+        "Interchange & network cost: ~2.4% + 30¢ blended pass-through",
+        "Net platform take rate spread: 0.5% retained revenue on all gross processing volume"
+      ],
+      "metric_bindings": [{"metric_id": "MET-003", "scenario": "base", "value": 24000000}],
+      "evidence_ids": ["MET-003", "MET-004", "MET-005", "ASM-001", "ASM-004"],
+      "speaker_notes": "Our economics are highly lucrative: after interchange costs, we retain a 0.5% net spread on all processing volume, producing $24M on $4.8B volume."
+    },
+    {
+      "type": "closing",
+      "headline": "Raising Seed round to expand engineering team and build the default financial infrastructure of the web",
+      "body": [
+        "18-month runway to expand banking rails, fraud engines, and multi-currency support",
+        "Founding team: Patrick Collison (CEO) and John Collison (President)",
+        "Join us in building the economic engine that powers the next generation of internet businesses"
+      ],
+      "ask": "Raising Seed Financing Round",
+      "evidence_ids": ["MET-003", "DEC-001", "DEC-002"]
+    }
+  ]
+}

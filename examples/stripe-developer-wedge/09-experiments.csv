@@ -1,0 +1,3 @@
+experiment_id,premise_ids,method,pass_threshold,stop_threshold,owner,deadline,status
+EXP-001,PRM-001,"YC S10 cohort payment onboarding trial with live developer installation",15 active companies live in 2 weeks,fewer than 3 companies,Patrick Collison,2010-07-15,passed
+EXP-002,PRM-002,"Automated fraud scoring algorithm pilot on live charges",chargeback rate below 0.5%,chargeback rate above 1.5%,John Collison,2010-08-30,passed

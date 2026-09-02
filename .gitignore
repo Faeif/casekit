@@ -5,3 +5,5 @@ __pycache__/
 outputs/*.pptx
 outputs/*.pdf
 inputs/extracted/
+
+.agents/

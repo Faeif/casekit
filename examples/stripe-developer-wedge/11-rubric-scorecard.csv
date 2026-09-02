@@ -1,0 +1,5 @@
+criterion,weight,score,reason,gap_remediation,owner,source_ids
+Market Size,0.25,5,"$175B US e-commerce market provides massive developer expansion upside",None,Strategy,CLM-004|CLM-005
+Product Wedge,0.25,5,"7 lines of code reduces onboarding time from 6 weeks to 5 minutes",None,Product,CLM-001|DEC-001
+Unit Economics,0.25,5,"0.5% net margin spread on $4.8B volume yields $24M net revenue",None,Finance,ASM-001|ASM-004
+Technical Architecture,0.25,5,"Tokenized client-side JS eliminates merchant PCI DSS liability entirely",None,Product,DEC-001|EXP-001

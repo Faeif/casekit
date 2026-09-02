@@ -1,0 +1,4 @@
+risk_id,risk,category,likelihood,impact,mitigation,contingency,owner,status
+RSK-001,"Trust and safety friction between hosts and strangers",operational,medium,high,"Two-sided user reviews, Facebook Connect integration, verified profiles","Host guarantee fund and 24/7 emergency support",Product,open
+RSK-002,"Supply shortage during non-event baseline periods",growth,medium,high,"Craigslist auto-poster and automated host onboarding tools","Local campus and city ambassador network incentives",Growth,open
+RSK-003,"Hotel lobby and municipal short-term occupancy tax regulations",legal,medium,medium,"Position as home-sharing cultural exchange and partner on voluntary tax collection","Retain specialized municipal regulatory counsel",Strategy,open

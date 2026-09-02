@@ -1,0 +1,5 @@
+assumption_id,variable,definition,unit,low,base,high,basis,source_ids,confidence,sensitivity,validation_method,owner,status
+ASM-001,avg_nightly_rate,"Average nightly lodging price per listing",USD,60,80,100,primary-research,SRC-002|SRC-003,high,high,"Pilot host listing pricing tracking",Finance,validated
+ASM-002,avg_nights_per_stay,"Average duration of guest booking stay",nights,2,3,4,primary-research,SRC-003,high,medium,"DNC and SF pilot booking logs",Finance,validated
+ASM-003,take_rate_pct,"Combined platform commission fee percentage",rate,0.08,0.10,0.12,analogy,SRC-001,high,high,"Host 3% + Guest 7% transaction fee schedule",Finance,validated
+ASM-004,conversion_rate,"Visitor to paid booking transaction rate",rate,0.015,0.025,0.040,primary-research,SRC-002,medium,high,"Website analytics cohort tracking",Growth,validated

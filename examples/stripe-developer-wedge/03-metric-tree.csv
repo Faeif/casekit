@@ -1,0 +1,7 @@
+metric_id,parent_metric_id,metric,metric_type,formula,unit,time_horizon,low,base,high,source_or_assumption_ids,owner
+MET-001,,Total US E-Commerce Volume (GPV TAM),outcome,total_us_ecommerce_volume,USD,Annual,140000000000,175000000000,210000000000,SRC-004|SRC-005|ASM-004,Strategy
+MET-002,MET-001,Developer Wedge Volume (GPV SAM),outcome,developer_population * annual_gpv_per_developer,USD,Annual,2400000000,4800000000,8000000000,SRC-005|SRC-002|ASM-004,Strategy
+MET-003,MET-002,Net Platform Revenue (SOM),north-star,developer_gpv * take_rate_spread,USD,Annual,12000000,24000000,40000000,MET-002|ASM-001|ASM-004,Finance
+MET-004,MET-002,Active Transacting Developers,driver,developer_gpv / annual_gpv_per_developer,accounts,Annual,50000,100000,150000,MET-002|ASM-004,Growth
+MET-005,,Average Gross Fee per $100 Charge,driver,amount * 0.029 + flat_fee,USD,per charge,2.80,3.20,3.60,ASM-001|ASM-002,Finance
+MET-006,,Developer Onboarding Time,driver,time_to_first_live_charge,minutes,per signup,2,5,10,ASM-003|SRC-001,Product

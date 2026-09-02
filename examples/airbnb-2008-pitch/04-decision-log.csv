@@ -1,0 +1,4 @@
+decision_id,date,decision,alternatives,criteria,rationale,evidence_and_assumption_ids,owner,status
+DEC-001,2008-08-01,"Implement Craigslist cross-posting wedge","Direct Google Ads spend vs SEO content","Zero-dollar CAC, speed to liquidity","Taps existing 17,000 weekly listings on Craigslist for $0 acquisition cost",MET-004|ASM-004|CLM-002,Growth,approved
+DEC-002,2008-08-10,"Set transparent 10% platform fee (3% host, 7% guest)","20% OTA fee vs subscription listing fee","Host adoption, transaction conversion","Undercuts legacy hotels (15-25% OTA fees) while providing transaction escrow",MET-006|ASM-003|CLM-001,Finance,approved
+DEC-003,2008-08-20,"Launch high-impact event targeting starting with DNC 2008 Denver","Broad national launch vs localized event blitz","Supply density, PR amplification","100% hotel sell-out creates immediate desperate demand and international press",MET-003|ASM-001|CLM-003,Strategy,approved

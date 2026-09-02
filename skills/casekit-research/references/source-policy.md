@@ -2,13 +2,13 @@
 
 ## Source hierarchy
 
-| Tier | Typical sources | Default use |
-|---|---|---|
-| A | laws, regulators, national statistics, audited filings, original datasets, peer-reviewed systematic reviews, official product documentation | anchor high-stakes claims |
-| B | peer-reviewed studies, recognized research institutes, established industry bodies, direct interviews with documented method | support and triangulate |
-| C | reputable journalism, analyst reports with transparent method, credible company case studies | context and benchmarks |
-| D | vendor blogs, aggregators, surveys with weak disclosure, expert opinion | discovery only or caveated support |
-| E | anonymous posts, AI output, search snippets, unsourced graphics | never final evidence |
+| Tier | Name | Typical sources | Default use |
+|---|---|---|---|
+| 1 | Authoritative Primary Sources | SEC 10-K/10-Q/8-K/S-1, Thai SEC 56-1 One Report, laws, royal decrees, regulator rules, central bank stats (BOT, Fed, ECB), national stats (NESDC, Census), multilateral datasets (World Bank, IMF), official product API docs & pricing | Mandatory anchor for high-stakes and material claims |
+| 2 | Peer-Reviewed & Systematic Research | Peer-reviewed journal studies (PubMed, IEEE), systematic reviews, published university research datasets with disclosed method, lab benchmarks | Support, validate, and triangulate |
+| 3 | Triangulated Industry & Benchmarks | Market terminals (Bloomberg, Refinitiv, PitchBook, S&P Capital IQ), analyst reports with transparent sample method (Gartner, IDC, Canalys), documented customer interviews | Context, peer comparisons, and proxy benchmarks |
+| 4 | Contextual & Qualitative Discovery | Reputable financial journalism (FT, WSJ, Bloomberg), trade association surveys, verified company engineering blogs | Discovery, trends, and qualitative context; never sole anchor |
+| Banned | Anti-Hallucination Rejection | Anonymous posts, direct AI chatbot output, search engine result snippets, unsourced infographics, circular press releases | Prohibited as final evidence |
 
 Quality is contextual. A company website is authoritative for its own price but weak evidence for its product's independent effectiveness.
 
@@ -41,5 +41,4 @@ Adjust the range wider when transferability is weak. Record the adjustment as a 
 
 ## Citation minimum
 
-Capture publisher, title, URL, publication date, access date, exact page/section, supporting passage or table, and interpretation. For PDFs, include page number. For datasets, include table name, variable definition, filter, and retrieval date.
-
+Capture publisher, title, URL, publication date, access date, exact page/section, supporting passage or table, interpretation, and SHA-256 content hash in snapshot archive. For PDFs, include page number. For datasets, include table name, variable definition, filter, and retrieval date.

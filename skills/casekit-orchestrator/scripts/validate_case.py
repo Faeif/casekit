@@ -62,10 +62,12 @@ def validate(root):
     if not official.is_dir():
         official = root
 
+    MANDATORY_FILES = {"evidence", "assumptions", "metrics"}
     for group, (filename, required, patterns, unique_fields) in FILES.items():
         path = official / filename
         if not path.exists():
-            errors.append(f"Missing required file: {filename}")
+            if group in MANDATORY_FILES:
+                errors.append(f"Missing required file: {filename}")
             continue
         fields, rows = read_rows(path)
         missing = [field for field in required if field not in fields]

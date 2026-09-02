@@ -1,0 +1,6 @@
+assumption_id,variable,definition,unit,low,base,high,basis,source_ids,confidence,sensitivity,validation_method,owner,status
+ASM-001,take_rate_spread,"Net margin take rate spread retained by platform after interchange and network fees",rate,0.003,0.005,0.008,primary-research,SRC-003,high,high,"Blended interchange pass-through reconciliation",Finance,validated
+ASM-002,flat_fee_per_tx,"Flat fee component per card transaction",USD,0.25,0.30,0.35,primary-research,SRC-003,high,medium,"Published 2.9% + 30¢ flat fee contract",Finance,validated
+ASM-003,developer_activation_time_minutes,"Time required for developer to integrate API and process first real charge",minutes,2,5,10,primary-research,SRC-001,high,high,"Developer onboarding time trial logs",Product,validated
+ASM-004,annual_gpv_per_developer,"Average annual gross processing volume per active developer account",USD,24000,48000,80000,analogy,SRC-004|SRC-005,medium,high,"YC pilot cohort gross processing tracking",Finance,validated
+ASM-005,developer_organic_retention,"Annual active account retention rate for integrated developers",rate,0.85,0.92,0.96,primary-research,SRC-005,high,high,"Cohort monthly active API key volume tracking",Growth,validated

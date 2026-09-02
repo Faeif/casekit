@@ -1,6 +1,6 @@
 ---
 name: casekit-pitch
-description: Convert evidence, strategy, economics, product, and go-to-market analysis into a concise judge-focused pitch narrative, slide storyboard, demo sequence, speaker script, appendix, and Q&A transitions. Use when creating or revising competition decks, hackathon presentations, executive pitches, vision stories, slide headlines, scripts, or timed delivery.
+description: Convert evidence, strategy, economics, product, and go-to-market analysis into a concise judge-focused pitch narrative, slide storyboard, demo sequence, speaker script, 130-150 WPM pitch timing enforcer, 4-judge rehearsal simulator, appendix, and Q&A transitions. Use when creating or revising competition decks, hackathon presentations, executive pitches, vision stories, slide headlines, scripts, or timed delivery.
 ---
 
 # CaseKit Pitch
@@ -31,9 +31,38 @@ Create the official competition version first, then derive—not independently r
 - Remove generic framework slides unless they change the decision.
 - Keep source markers visible and resolvable.
 
-## Timing
+## Pitch Timing & 130–150 WPM Word Budgeting
 
-Allocate time by judging importance, not equal seconds per slide. Protect time for opening, demo/value proof, economics, implementation, close, and transition buffer. Read the full script aloud and cut to at most 85–90% of the official limit.
+Spoken pitch delivery degrades sharply above 150 words per minute. Enforce strict pacing across slide `speaker_notes`:
+
+$$\text{Word Budget} = \text{Target Duration (Minutes)} \times 140\text{ WPM (Target Average)}$$
+
+| Pitch Format | Target Duration | Word Budget Range | Slide Count | Average Words / Slide |
+|---|---|---|---|---|
+| **Executive Elevator** | 1 Minute | 130 – 150 words | 1 – 2 slides | ~75 words |
+| **Rapid Lightning** | 2 Minutes | 260 – 300 words | 3 – 4 slides | ~75 words |
+| **Standard Hackathon** | 3 Minutes | 390 – 450 words | 5 – 6 slides | ~70 words |
+| **Demo Day / YC** | 5 Minutes | 650 – 750 words | 8 – 10 slides | ~75 words |
+| **Board / Investment** | 10 Minutes | 1,300 – 1,500 words | 12 – 15 slides | ~95 words |
+
+### Timing Validation Rules
+1. Calculate words per slide: `words = len(speaker_notes.split())`.
+2. Estimated slide duration: `slide_seconds = (words / 140.0) * 60.0`.
+3. Pacing warnings:
+   - **Rushing alert (> 150 WPM)**: High risk of buzzer cutoff or unintelligible delivery. Cut text.
+   - **Dragging alert (< 120 WPM)**: Low information density or excessive pauses. Add concrete proof.
+
+## 4-Judge Rehearsal Simulator
+
+Before final deck freeze, stress-test the argument against the 4 adversarial judge personas:
+- **The Skeptical CFO**: Attack vectors on fully-loaded CAC, 45-day AR cash trough, margin floors, churn.
+- **The Deep-Tech CTO**: Attack vectors on 504 timeout idempotency, dropped webhooks, PDPA encryption, rollback runbooks.
+- **The Corporate BU Head**: Attack vectors on sales commission cannibalization, 14-month IT queue, reputation risk.
+- **The YC Partner**: Attack vectors on $0 acquisition wedge, organic developer pull, bottom-up TAM ($ \text{Units} \times \text{Price} $).
+
+Execute the **4-Move Response Sequence**: Direct Answer (< 15 words) → Evidence Anchor (`CLM`/`MET`) → Sensitivity Bound (`ASM`) → Validated Action (`EXP`).
+
+Read `references/rehearsal-simulator.md` for complete 3-minute rapid-fire drill protocols and question banks.
 
 ## Delivery package
 

@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
-"""Validate the CaseKit package and run deterministic smoke tests."""
+"""Validate the CaseKit package, run 4-tier test suites, and execute deterministic smoke tests."""
 
+import argparse
 import json
 import re
 import shutil
 import subprocess
 import sys
 import tempfile
+import unittest
 import zipfile
 from pathlib import Path
 
@@ -14,6 +16,8 @@ from openpyxl import Workbook
 
 
 ROOT = Path(__file__).resolve().parent.parent
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 SKILLS = ROOT / "skills"
 NAME_RE = re.compile(r"^[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?$")
 PROVIDER_PATHS = (".codex/skills", ".claude/skills", ".gemini/skills", ".agent/skills", ".agents/skills")
@@ -461,6 +465,64 @@ def smoke_tests(errors):
             tampered_cfo_result = run_unchecked([sys.executable, str(validator / "audit_case.py"), str(cfo_project)])
             if tampered_cfo_result.returncode == 0 or "period 1 ending cash does not reconcile" not in tampered_cfo_result.stdout:
                 fail("Validator did not reject tampered CFO operating-plan output", errors)
+
+            # Milestone 2: Progressive Presets Verification
+            sprint_proj = temp_path / "sprint-preset-case"
+            run([sys.executable, str(casekit_cli), "init", str(sprint_proj), "--preset", "hackathon-sprint"])
+            run([sys.executable, str(validator / "audit_case.py"), str(sprint_proj), "--strict"])
+
+            corp_proj = temp_path / "corp-preset-case"
+            run([sys.executable, str(casekit_cli), "init", str(corp_proj), "--preset", "corporate-launchpad"])
+            run([sys.executable, str(validator / "audit_case.py"), str(corp_proj), "--strict"])
+
+            deep_proj = temp_path / "deep-preset-case"
+            run([sys.executable, str(casekit_cli), "init", str(deep_proj), "--preset", "full-deep-drill"])
+            run([sys.executable, str(validator / "audit_case.py"), str(deep_proj), "--strict"])
+
+            # Milestone 2: Interactive CLI Helpers & Monotonicity Verification
+            run([sys.executable, str(casekit_cli), "add", "claim", str(sprint_proj), "--claim", "Verified Thai SaaS growth", "--url", "https://example.com/saas.pdf", "--publisher", "ETDA", "--title", "Report 2025", "--page", "p.12"])
+            run([sys.executable, str(casekit_cli), "add", "assumption", str(sprint_proj), "--variable", "pilot_conversion", "--unit", "rate", "--low", "0.05", "--base", "0.10", "--high", "0.15", "--basis", "analogy"])
+            run([sys.executable, str(casekit_cli), "add", "decision", str(corp_proj), "--decision", "Select Modular Architecture", "--alternatives", "Microservices", "--criteria", "Speed", "--refs", "CLM-001"])
+
+            check_res = run([sys.executable, str(casekit_cli), "check", str(sprint_proj), "--strict"])
+            if "PASSED" not in check_res.stdout:
+                fail("casekit check did not report PASSED status", errors)
+
+            bad_asm = run_unchecked([sys.executable, str(casekit_cli), "add", "assumption", str(sprint_proj), "--variable", "bad_range", "--unit", "rate", "--low", "0.50", "--base", "0.10", "--high", "0.20"])
+            if bad_asm.returncode == 0 or "expected low <= base <= high" not in bad_asm.stderr:
+                fail("casekit add assumption did not reject non-monotonic scenario values", errors)
+
+            # Milestone 2: Archive Snapshot Verification
+            archive_res = run([sys.executable, str(casekit_cli), "archive", str(sprint_proj), "--verify"])
+            if "Archive integrity: 0 error(s)" not in archive_res.stdout:
+                fail("casekit archive verify reported errors on archived snapshots", errors)
+
+            # Milestone 2: CaseKit MCP Server stdio Verification
+            mcp_server_script = ROOT / "scripts" / "casekit_mcp_server.py"
+            mcp_proc = subprocess.Popen([sys.executable, str(mcp_server_script)], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            def mcp_req(req_obj):
+                mcp_proc.stdin.write(json.dumps(req_obj) + "\n")
+                mcp_proc.stdin.flush()
+                return json.loads(mcp_proc.stdout.readline())
+
+            mcp_init = mcp_req({"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {}})
+            if mcp_init.get("result", {}).get("serverInfo", {}).get("name") != "casekit-mcp-server":
+                fail("MCP server initialize did not return valid serverInfo", errors)
+
+            mcp_tools = mcp_req({"jsonrpc": "2.0", "id": 2, "method": "tools/list", "params": {}})
+            tool_names = {t["name"] for t in mcp_tools.get("result", {}).get("tools", [])}
+            required_tools = {"casekit_status", "casekit_validate", "casekit_check", "casekit_add_claim", "casekit_add_assumption", "casekit_add_decision", "casekit_render_deck", "casekit_sync_spreadsheet", "casekit_inspect_spreadsheet", "casekit_archive_source"}
+            if not required_tools <= tool_names:
+                fail(f"MCP server tools/list missing required tools: {required_tools - tool_names}", errors)
+
+            mcp_call = mcp_req({"jsonrpc": "2.0", "id": 3, "method": "tools/call", "params": {"name": "casekit_status", "arguments": {"project": str(sprint_proj)}}})
+            if "project" not in mcp_call.get("result", {}).get("content", [{}])[0].get("text", ""):
+                fail("MCP server tools/call casekit_status failed", errors)
+
+            mcp_proc.stdin.close()
+            mcp_proc.terminate()
+            mcp_proc.wait()
+
         result = run(
             [
                 sys.executable,
@@ -489,27 +551,91 @@ def smoke_tests(errors):
         fail(f"Smoke test failed: {exc}; {details}", errors)
 
 
+def run_modular_tests(tier=None, feature=None, verbose=False):
+    """Discover and execute tests from the 4-tier suite in tests/."""
+    loader = unittest.TestLoader()
+    suite = unittest.TestSuite()
+    tests_dir = ROOT / "tests"
+
+    if tier == 1:
+        import tests.test_tier1_features as t1
+        suite.addTests(loader.loadTestsFromModule(t1))
+    elif tier == 2:
+        import tests.test_tier2_boundaries as t2
+        suite.addTests(loader.loadTestsFromModule(t2))
+    elif tier == 3:
+        import tests.test_tier3_combinations as t3
+        suite.addTests(loader.loadTestsFromModule(t3))
+    elif tier == 4:
+        import tests.test_tier4_scenarios as t4
+        suite.addTests(loader.loadTestsFromModule(t4))
+    else:
+        suite = loader.discover(str(tests_dir), pattern="test_*.py")
+
+    if feature:
+        feature_lower = feature.lower()
+        filtered = unittest.TestSuite()
+        def _filter(item):
+            if isinstance(item, unittest.TestSuite):
+                for sub in item:
+                    _filter(sub)
+            else:
+                if feature_lower in item.id().lower():
+                    filtered.addTest(item)
+        _filter(suite)
+        suite = filtered
+
+    runner = unittest.TextTestRunner(verbosity=2 if verbose else 1)
+    result = runner.run(suite)
+    return result.wasSuccessful(), result.testsRun, len(result.failures), len(result.errors)
+
+
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--tier", type=int, choices=[1, 2, 3, 4], help="Run only specified test tier (1: Features, 2: Boundaries, 3: Combinations, 4: Scenarios)")
+    parser.add_argument("--feature", type=str, help="Run only tests matching feature ID (e.g. F01, F04)")
+    parser.add_argument("--smoke-only", action="store_true", help="Run only package manifest and legacy smoke tests")
+    parser.add_argument("--modular-only", action="store_true", help="Run only modular 4-tier test suites in tests/")
+    parser.add_argument("-v", "--verbose", action="store_true", help="Verbose test runner output")
+    args = parser.parse_args()
+
     errors = []
     manifest = json.loads((ROOT / "casekit.json").read_text(encoding="utf-8"))
-    if manifest.get("format", {}).get("standard") != "Agent Skills":
-        fail("Manifest does not declare the Agent Skills portability standard", errors)
-    required_clients = {"codex", "claude-code", "gemini-cli", "google-antigravity"}
-    if set(manifest.get("native_clients", {})) != required_clients:
-        fail("Manifest native client compatibility matrix is incomplete", errors)
-    expected = set(manifest.get("skills", []))
-    actual = {path.name for path in SKILLS.glob("casekit-*") if path.is_dir()}
-    if expected != actual:
-        fail(f"Manifest skills differ from filesystem: expected={sorted(expected)} actual={sorted(actual)}", errors)
-    for skill in sorted(SKILLS.glob("casekit-*")):
-        validate_skill(skill, errors)
-    smoke_tests(errors)
+
+    # 1. Package & Skills Validation (unless --modular-only)
+    if not args.modular_only:
+        if manifest.get("format", {}).get("standard") != "Agent Skills":
+            fail("Manifest does not declare the Agent Skills portability standard", errors)
+        required_clients = {"codex", "claude-code", "gemini-cli", "google-antigravity"}
+        if set(manifest.get("native_clients", {})) != required_clients:
+            fail("Manifest native client compatibility matrix is incomplete", errors)
+        expected = set(manifest.get("skills", []))
+        actual = {path.name for path in SKILLS.glob("casekit-*") if path.is_dir()}
+        if expected != actual:
+            fail(f"Manifest skills differ from filesystem: expected={sorted(expected)} actual={sorted(actual)}", errors)
+        for skill in sorted(SKILLS.glob("casekit-*")):
+            validate_skill(skill, errors)
+
+    # 2. Modular 4-Tier Test Runner (unless --smoke-only)
+    if not args.smoke_only:
+        print(f"Executing CaseKit 4-Tier Test Suite (tier={args.tier or 'all'}, feature={args.feature or 'all'})...")
+        success, count, failures, err_count = run_modular_tests(tier=args.tier, feature=args.feature, verbose=args.verbose)
+        if not success:
+            fail(f"4-Tier modular test suite failed: {count} tests run, {failures} failure(s), {err_count} error(s)", errors)
+        else:
+            print(f"4-Tier test suite passed: {count} tests executed cleanly.")
+
+    # 3. Smoke Tests (if requested via --smoke-only)
+    if args.smoke_only:
+        smoke_tests(errors)
+
     if errors:
         for error in errors:
             print(f"ERROR: {error}")
         print(f"CaseKit validation failed with {len(errors)} error(s)")
         raise SystemExit(1)
-    print(f"CaseKit {manifest.get('version')} valid: {len(actual)} skills and all smoke tests passed")
+    actual_skills = len({path.name for path in SKILLS.glob("casekit-*") if path.is_dir()})
+    print(f"CaseKit {manifest.get('version')} valid: {actual_skills} skills and all test tiers passed successfully.")
 
 
 if __name__ == "__main__":

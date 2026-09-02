@@ -1,0 +1,156 @@
+{
+  "meta": {
+    "title": "AirBed & Breakfast — Seed Pitch 2008",
+    "subtitle": "Book rooms with locals, rather than hotels",
+    "team": "Brian Chesky, Joe Gebbia, Nathan Blecharczyk",
+    "language": "en-US",
+    "currency": "USD",
+    "font_head": "Arial",
+    "font_body": "Arial",
+    "aspect_ratio": "16:9"
+  },
+  "slides": [
+    {
+      "type": "cover",
+      "headline": "AirBed & Breakfast: Book rooms with locals, rather than hotels",
+      "subhead": "A peer-to-peer web marketplace for short-term lodging worldwide",
+      "speaker_notes": "Good morning. We are AirBed and Breakfast, a marketplace that allows travelers to book unique rooms with locals rather than expensive hotels."
+    },
+    {
+      "type": "split_content",
+      "headline": "Price, cultural disconnect, and unmonetized spare rooms create massive travel friction",
+      "left": {
+        "title": "Traveler Lodging Pain",
+        "body": [
+          "Price is a primary concern for online travel bookers",
+          "Hotels leave travelers isolated from local city culture",
+          "Surge pricing during major conferences locks out attendees"
+        ]
+      },
+      "right": {
+        "title": "Homeowner Opportunity",
+        "body": [
+          "Millions of homeowners have vacant spare rooms and couches",
+          "No structured, secure web platform to monetize extra space",
+          "Craigslist lacks profiles, payments, reviews, and trust"
+        ]
+      },
+      "evidence_ids": ["CLM-001", "CLM-002", "CLM-003"],
+      "speaker_notes": "Travelers face three core problems: high hotel prices, hotel isolation, and no easy way for homeowners to monetize spare rooms."
+    },
+    {
+      "type": "metric",
+      "headline": "A web platform where travelers book spaces with locals, saving money while hosts earn income",
+      "metric": "10% Fee",
+      "label": "Platform Take Rate Commission",
+      "comparison": "$24 net revenue per 3-night stay",
+      "body": [
+        "Search by city, budget, and event dates",
+        "Verified two-sided host and guest profiles with ratings",
+        "Secure payment escrow with instant online reservation"
+      ],
+      "metric_bindings": [{"metric_id": "MET-006", "scenario": "base", "value": 24}],
+      "evidence_ids": ["MET-006", "ASM-001", "ASM-003"],
+      "speaker_notes": "We offer a web platform where hosts make money from extra space and travelers save money while experiencing local culture."
+    },
+    {
+      "type": "funnel",
+      "headline": "Over 1.9 billion worldwide trips create an enormous $200M serviceable obtainable market",
+      "stages": [
+        {"label": "1.9B Worldwide Trips", "value": 1900000000, "metric_id": "MET-001", "scenario": "base"},
+        {"label": "560M Budget Trips (SAM)", "value": 560000000, "metric_id": "MET-002", "scenario": "base"},
+        {"label": "10.6M Booked Trips (SOM)", "value": 10600000, "metric_id": "MET-004", "scenario": "base"}
+      ],
+      "evidence_ids": ["CLM-004", "CLM-005", "MET-001", "MET-002", "MET-004"],
+      "speaker_notes": "Total addressable market is 1.9 billion trips worldwide. Budget and online trips represent 560 million, and capturing just 10.6 million trips produces $200M in revenue."
+    },
+    {
+      "type": "card_grid",
+      "headline": "630,000 Couchsurfing hosts and 17,000 weekly Craigslist listings prove active market demand",
+      "cards": [
+        {
+          "title": "CouchSurfing (630k Users)",
+          "body": ["630,000 people host travelers for free", "Proves cultural willingness to open homes", "Lacks transaction monetization"]
+        },
+        {
+          "title": "Craigslist (17k Ads/Wk)",
+          "body": ["17,000 temporary housing ads weekly in SF/NYC", "Active commercial demand exists", "Lacks safety, reviews, and escrow"]
+        },
+        {
+          "title": "Events (100% Sold Out)",
+          "body": ["Denver DNC 27k attendees sold out hotels", "AirBed hosts booked 100+ rooms in 1 week", "Proves instant event liquidity"]
+        }
+      ],
+      "evidence_ids": ["CLM-001", "CLM-002", "CLM-003"],
+      "speaker_notes": "Market validation is proven: 630k people use CouchSurfing to host strangers, while 17,000 temporary housing ads are posted on Craigslist weekly."
+    },
+    {
+      "type": "timeline",
+      "headline": "Two distribution engines drive $0 customer acquisition and rapid host liquidity",
+      "phases": [
+        {"label": "Event Blitz", "items": ["Target high-demand sold-out conferences", "Direct outreach to event attendees", "PR press campaigns (Obama O's)"], "gate": "100+ listings per event city"},
+        {"label": "Craigslist Wedge", "items": ["1-click cross-posting tool for hosts", "Inbound traffic from Craigslist searchers", "Direct conversion into AirBed escrow"], "gate": "Zero-CAC organic flywheel"},
+        {"label": "City Expansion", "items": ["Professional photography pilot in NYC", "Instant booking and verified profiles", "International traveler rollout"], "gate": "80,000 bookings in 12 months"}
+      ],
+      "evidence_ids": ["DEC-001", "DEC-003", "EXP-001"],
+      "speaker_notes": "Our dual distribution strategy combines high-profile event targeting with an automated Craigslist cross-posting tool that acquires hosts and guests for $0."
+    },
+    {
+      "type": "metric",
+      "headline": "A 10% take rate on $240 average bookings generates $200M in annual net revenue",
+      "metric": "$200.0M",
+      "label": "Annual Net Revenue Opportunity (SOM)",
+      "comparison": "10.6M booked trips × $24 fee",
+      "body": [
+        "Average booking: $80 per night across 3 nights stay ($240 total)",
+        "AirBed & Breakfast charges a combined 10% commission ($24/booking)",
+        "Zero inventory ownership and zero physical facility overhead"
+      ],
+      "metric_bindings": [{"metric_id": "MET-003", "scenario": "base", "value": 200000000}],
+      "evidence_ids": ["MET-003", "MET-005", "MET-006", "ASM-001", "ASM-002"],
+      "speaker_notes": "Our business model is simple: 10% fee on every booking. On an average $240 trip, we earn $24. At 10.6 million trips, that is a $200 million net revenue run-rate."
+    },
+    {
+      "type": "card_grid",
+      "headline": "Direct online transactions, host profiles, and trust systems create structural defensibility",
+      "cards": [
+        {
+          "title": "Craigslist / Classifieds",
+          "body": ["Offline cash payments", "No verified user identities", "No guest or host ratings", "Unsafe and unmonetized"]
+        },
+        {
+          "title": "Hotels & Hostels",
+          "body": ["High price per night ($150-$300)", "Impersonal commercial experience", "Fixed inventory capacity constraints", "High operational CapEx"]
+        },
+        {
+          "title": "AirBed & Breakfast",
+          "body": ["3-click online payment escrow", "Two-sided verified profiles & reviews", "Affordable local pricing ($80/night)", "Asset-light unlimited supply"]
+        }
+      ],
+      "evidence_ids": ["DEC-002", "RSK-001", "CLM-001"],
+      "speaker_notes": "Unlike Craigslist, we handle secure online payments, profiles, and reviews. Unlike hotels, we have unlimited peer-to-peer inventory and lower pricing."
+    },
+    {
+      "type": "timeline",
+      "headline": "Clear operational roadmap to achieve 80,000 transactions and $2M revenue in Year 1",
+      "phases": [
+        {"label": "Q1: Seed & Product", "items": ["Close $500k angel financing", "Launch instant booking and review system", "Deploy automated Craigslist tool"], "gate": "1,000 active listings"},
+        {"label": "Q2: Top Metros", "items": ["Expand NYC, SF, Boston, Chicago", "Roll out professional photography", "Establish 24/7 host trust hotline"], "gate": "10,000 completed bookings"},
+        {"label": "Q3-Q4: Scale", "items": ["Launch international event partnerships", "Achieve $2M gross revenue run-rate", "Prepare Series A expansion"], "gate": "80,000 completed bookings"}
+      ],
+      "evidence_ids": ["DEC-003", "EXP-002", "RSK-002"],
+      "speaker_notes": "Our 12-month roadmap focuses on product trust, scaling top metropolitan markets, and hitting 80,000 completed bookings."
+    },
+    {
+      "type": "closing",
+      "headline": "Raising $500,000 angel round to reach 80,000 transactions and $2M revenue in 12 months",
+      "body": [
+        "12-month runway to reach profitability and 80,000 completed transactions",
+        "Team: Brian Chesky (CEO), Joe Gebbia (CPO), Nathan Blecharczyk (CTO)",
+        "Join us in redefining global travel and creating the world's largest peer-to-peer lodging network"
+      ],
+      "ask": "Raising $500,000 Angel Investment Round",
+      "evidence_ids": ["MET-003", "DEC-001", "DEC-002"]
+    }
+  ]
+}

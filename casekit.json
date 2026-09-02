@@ -26,7 +26,8 @@
     "casekit-pitch",
     "casekit-validator",
     "casekit-deck",
-    "casekit-red-team"
+    "casekit-red-team",
+    "casekit-yc-coach"
   ],
   "optional_integrations": {
     "gstack": "https://github.com/garrytan/gstack",
