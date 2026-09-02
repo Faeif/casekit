@@ -1,0 +1,7 @@
+metric_id,parent_metric_id,metric,metric_type,formula,unit,time_horizon,low,base,high,source_or_assumption_ids,owner
+MET-001,,Total Addressable Market (Worldwide Trips),outcome,total_worldwide_trips,trips,Annual,1500000000,1900000000,2200000000,SRC-005|SRC-004|ASM-001,Strategy
+MET-002,MET-001,Serviceable Available Market (Budget Trips),outcome,budget_and_online_trips,trips,Annual,450000000,560000000,650000000,SRC-004|SRC-001|ASM-004,Strategy
+MET-003,MET-002,Serviceable Obtainable Market (SOM Net Revenue),north-star,som_trips * revenue_per_booking,USD,Annual,150000000,200000000,250000000,MET-004|MET-006|ASM-003,Finance
+MET-004,MET-002,SOM Trips Booked,driver,target_market_share * budget_trips,trips,Annual,8000000,10600000,13000000,SRC-004|ASM-004|MET-002,Growth
+MET-005,,Average Booking Value,driver,avg_nightly_rate * avg_nights_per_stay,USD,per booking,180,240,300,ASM-001|ASM-002,Finance
+MET-006,MET-005,Revenue per Booking (10% Commission),driver,avg_booking_value * take_rate_pct,USD,per booking,18,24,30,MET-005|ASM-003,Finance

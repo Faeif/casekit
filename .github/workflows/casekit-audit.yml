@@ -1,0 +1,72 @@
+name: CaseKit PR & Package Audit
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  audit:
+    name: Audit Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: "pip"
+
+      - name: Install dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install -r requirements.txt
+
+      - name: Run CaseKit Doctor in Strict Mode
+        run: python3 casekit.py doctor --strict
+
+      - name: Run Core Test Suite & Smoke Tests
+        run: python3 scripts/validate_suite.py
+
+      - name: Test Preset Scaffolding (hackathon-sprint)
+        run: |
+          python3 casekit.py init /tmp/test-sprint --preset hackathon-sprint
+          python3 casekit.py validate /tmp/test-sprint --strict
+
+      - name: Test Preset Scaffolding (corporate-launchpad)
+        run: |
+          python3 casekit.py init /tmp/test-corp --preset corporate-launchpad
+          python3 casekit.py validate /tmp/test-corp --strict
+
+      - name: Test Preset Scaffolding (full-deep-drill)
+        run: |
+          python3 casekit.py init /tmp/test-deep --preset full-deep-drill
+          python3 casekit.py validate /tmp/test-deep --strict
+
+      - name: Validate Canonical Reference Example (launch-event)
+        run: python3 casekit.py validate examples/launch-event --strict
+
+      - name: Validate Canonical Reference Example (airbnb-2008-pitch)
+        run: python3 casekit.py validate examples/airbnb-2008-pitch --strict
+
+      - name: Validate Canonical Reference Example (stripe-developer-wedge)
+        run: python3 casekit.py validate examples/stripe-developer-wedge --strict
+
+      - name: Test Deck Rendering
+        run: |
+          python3 casekit.py render examples/launch-event --output /tmp/launch-event.pptx
+          python3 casekit.py render examples/airbnb-2008-pitch --output /tmp/airbnb.pptx
+          python3 casekit.py render examples/stripe-developer-wedge --output /tmp/stripe.pptx
+
+      - name: Test Live Prototype Generation
+        run: |
+          python3 casekit.py prototype examples/launch-event --output /tmp/prototype.html
+          python3 casekit.py prototype examples/airbnb-2008-pitch --output /tmp/airbnb-proto.html
+          python3 casekit.py prototype examples/stripe-developer-wedge --output /tmp/stripe-proto.html

@@ -1,0 +1,4 @@
+risk_id,risk,category,likelihood,impact,mitigation,contingency,owner,status
+RSK-001,"Fraud and chargeback liability on instantly onboarded merchants",financial,medium,high,"Real-time velocity filters, risk scoring algorithms, and automated rolling reserves","Dynamic payout delay (7-day rolling window) for new accounts",Finance,open
+RSK-002,"Acquiring bank partner underwriting bottleneck or termination",operational,medium,high,"Multi-bank acquiring redundancy and direct card brand relationships","Secondary banking sponsor standby contract",Strategy,open
+RSK-003,"Card network chargeback ratio threshold exceeding 1.0 percent",regulatory,low,high,"Automated merchant offboarding at 0.75% chargeback threshold","Dedicated merchant risk remediation queue",Operations,open

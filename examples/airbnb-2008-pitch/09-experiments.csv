@@ -1,0 +1,3 @@
+experiment_id,premise_ids,method,pass_threshold,stop_threshold,owner,deadline,status
+EXP-001,PRM-001,"Denver DNC lodging pilot targeting overflow attendees",50 completed bookings,fewer than 10 bookings,Brian Chesky,2008-08-30,passed
+EXP-002,PRM-002,"Craigslist cross-posting tool pilot in San Francisco",100 inbound listing inquiries,fewer than 15 inquiries,Nathan Blecharczyk,2008-09-15,passed

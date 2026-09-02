@@ -1,0 +1,5 @@
+criterion,weight,score,reason,gap_remediation,owner,source_ids
+Market Size,0.25,5,"1.9B worldwide trips creates $2B budget SAM and $200M SOM opportunity",None,Strategy,CLM-004|CLM-005
+Product Wedge,0.25,5,"Craigslist cross-posting provides zero-dollar organic acquisition",None,Growth,CLM-002|DEC-001
+Unit Economics,0.25,5,"10% take rate generates $24 net revenue per booking on zero asset cost",None,Finance,ASM-001|ASM-003
+Feasibility & Team,0.25,5,"Founders have validated DNC pilot and built end-to-end 3-click booking flow",None,Product,EXP-001|DEC-002

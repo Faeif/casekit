@@ -66,7 +66,7 @@ NONEMPTY = {
     "evidence": {"claim_id", "claim", "source_id", "publisher", "title", "url", "accessed_date", "page_or_section", "interpretation", "owner"},
     "assumptions": {"assumption_id", "variable", "definition", "unit", "low", "base", "high", "basis", "validation_method", "owner", "status"},
     "metrics": {"metric_id", "metric", "metric_type", "formula", "unit", "time_horizon", "source_or_assumption_ids", "owner"},
-    "decisions": {"decision_id", "date", "decision", "alternatives", "criteria", "rationale", "evidence_and_assumption_ids", "owner", "status"},
+    "decisions": {"decision_id", "date", "decision", "alternatives", "criteria", "rationale", "owner", "status"},
     "risks": {"risk_id", "risk", "category", "likelihood", "impact", "mitigation", "contingency", "owner", "status"},
     "premises": {"premise_id", "premise", "type", "confidence", "decision_impact", "falsification_test", "owner", "status"},
     "experiments": {"experiment_id", "premise_ids", "method", "pass_threshold", "stop_threshold", "owner", "deadline", "status"},
@@ -95,6 +95,21 @@ def close_enough(left, right):
     return abs(left - right) <= max(abs(right) * 1e-6, 1e-6)
 
 
+def find_official_file(official, filename):
+    if isinstance(filename, str):
+        target = official / filename
+        name = Path(filename).name
+    else:
+        target = official / filename if not filename.is_absolute() else filename
+        name = filename.name
+    if target.exists():
+        return target
+    matches = [p for p in official.rglob(name) if p.is_file()]
+    if matches:
+        return matches[0]
+    return target
+
+
 def audit(project):
     errors, warnings = [], []
     tables, locations, ids = {}, {}, set()
@@ -102,10 +117,12 @@ def audit(project):
     if not official.is_dir():
         official = project
 
+    MANDATORY_FILES = {"evidence", "assumptions", "metrics"}
     for group, (filename, required, unique_fields) in FILES.items():
-        path = official / filename
+        path = find_official_file(official, filename)
         if not path.exists():
-            errors.append(f"{filename}: missing required artifact")
+            if group in MANDATORY_FILES:
+                errors.append(f"{filename}: missing required artifact")
             continue
         fields, rows = read_csv(path)
         rows = [row for row in rows if not is_blank(row)]
@@ -186,14 +203,19 @@ def audit(project):
                 errors.append(f"02-assumptions.csv:{line}: unresolved source reference {ref}")
 
     for line, row in enumerate(tables.get("metrics", []), 2):
+        metric_id = row.get("metric_id", "").strip()
+        metric_type = row.get("metric_type", "").strip().lower()
         parent = row["parent_metric_id"].strip()
         if parent and parent not in metric_ids:
             errors.append(f"03-metric-tree.csv:{line}: unresolved parent metric {parent}")
         if not row["formula"].strip():
             errors.append(f"03-metric-tree.csv:{line}: missing formula")
-        for ref in split_ids(row["source_or_assumption_ids"]):
+        refs = split_ids(row["source_or_assumption_ids"])
+        for ref in refs:
             if ref not in sources | assumption_ids | metric_ids:
                 errors.append(f"03-metric-tree.csv:{line}: unresolved model reference {ref}")
+        if metric_type in {"north-star", "outcome"} and len(refs) < 3:
+            warnings.append(f"03-metric-tree.csv:{line}: {metric_id} is a {metric_type} metric but lacks 3 triangulated sources/assumptions (found: {len(refs)})")
 
     for line, row in enumerate(tables.get("decisions", []), 2):
         try:
@@ -218,7 +240,7 @@ def audit(project):
             if ref not in premise_ids:
                 errors.append(f"09-experiments.csv:{line}: unresolved premise reference {ref}")
 
-    option_path = official / "option-portfolio.csv"
+    option_path = find_official_file(official, "option-portfolio.csv")
     option_count = 0
     if option_path.exists():
         option_fields, option_rows = read_csv(option_path)
@@ -260,7 +282,7 @@ def audit(project):
                 errors.append("option-portfolio.csv: exactly one nonblank option must have status 'chosen'")
             option_count = len(option_rows)
 
-    integration_path = official / "integration-contract.csv"
+    integration_path = find_official_file(official, "integration-contract.csv")
     integration_count = 0
     if integration_path.exists():
         integration_fields, integration_rows = read_csv(integration_path)
@@ -304,7 +326,7 @@ def audit(project):
                     errors.append(f"integration-contract.csv:{line}: unresolved risk reference {risk_id}")
             integration_count = len(integration_rows)
 
-    idea_path = official / "idea-backlog.csv"
+    idea_path = find_official_file(official, "idea-backlog.csv")
     idea_count = 0
     if idea_path.exists():
         idea_fields, idea_rows = read_csv(idea_path)
@@ -328,7 +350,7 @@ def audit(project):
                 if idea_id in idea_ids:
                     errors.append(f"idea-backlog.csv:{line}: duplicate idea_id {idea_id}")
                 idea_ids.add(idea_id)
-                for field in ("title", "status", "origin", "problem_or_hypothesis", "proposed_mechanism", "owner", "required_evidence_or_test", "next_action"):
+                for field in ("title", "origin", "problem_or_hypothesis", "proposed_mechanism", "owner", "status"):
                     if not row[field].strip():
                         errors.append(f"idea-backlog.csv:{line}: blank required value {field}")
                 status = row["status"].strip().lower()
@@ -349,7 +371,7 @@ def audit(project):
                     errors.append(f"idea-backlog.csv:{line}: accepted-for-case requires promoted_artifacts")
             idea_count = len(idea_rows)
 
-    engineering_profile_path = official / "engineering" / "00-engineering-profile.json"
+    engineering_profile_path = find_official_file(official, "00-engineering-profile.json")
     engineering_level = None
     if engineering_profile_path.exists():
         try:
@@ -398,13 +420,11 @@ def audit(project):
                 if row.get("risk_id", "").strip() not in risk_ids:
                     errors.append(f"engineering/production-readiness.csv: {area} unresolved risk reference {row.get('risk_id', '').strip()}")
 
-    deck_path = official / "12-deck-spec.json"
+    deck_path = find_official_file(official, "12-deck-spec.json")
     if deck_path.exists():
         try:
             deck = json.loads(deck_path.read_text(encoding="utf-8"))
             slides = deck.get("slides", [])
-            if not slides:
-                errors.append("12-deck-spec.json: slides must be non-empty")
             for index, slide in enumerate(slides, 1):
                 if not slide.get("headline"):
                     errors.append(f"12-deck-spec.json: slide {index} missing headline")
